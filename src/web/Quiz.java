@@ -36,6 +36,10 @@ public class Quiz {
 		return this.index.get(currentQuestion);
 	}
 	
+	public Question getCurrentQuestion(int index) {
+		return this.allQuestions.get(index);
+	}
+	
 	public void setNextQuestionNumber() {
 		this.currentQuestion++;
 	}
@@ -53,10 +57,19 @@ public class Quiz {
 		for (int key : userAnswers.keySet()) {
 			List<String> inputans = userAnswers.get(key);
 			Question q = allQuestions.get(key);
-			Set<String> validAnswers = q.getAnswers();
-			for (String s : inputans) {
-				if (validAnswers.contains(s)) {
-					score++;
+			if (q instanceof MatchingQuestion) {
+				List<String> allAnswerOption = q.getAnswerOptions();
+				for (int i = 0; i < allAnswerOption.size(); i++) {
+					if (allAnswerOption.get(i).equalsIgnoreCase(inputans.get(i))) {
+						score++;
+					}
+				}
+			} else {
+				Set<String> validAnswers = q.getAnswers();
+				for (String s : inputans) {
+					if (validAnswers.contains(s)) {
+						score++;
+					}
 				}
 			}
 		}

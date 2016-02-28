@@ -52,10 +52,16 @@ public class MultiplePageServlet extends HttpServlet {
 		
 		String token = request.getParameter("token");
 		
-		String userAnswer = request.getParameter("answer-" + currentQuiz.getCurrentQuestionNumber());
+		int i = currentQuiz.getCurrentQuestionNumber();
+		Question qt = currentQuiz.getCurrentQuestion(i);
 		List<String> anslist = new ArrayList<String>();
-		anslist.add(userAnswer);
-		currentQuiz.setAnswers(currentQuiz.getCurrentQuestionNumber(), anslist);
+		String[] options = request.getParameterValues("answer-" + i);
+		if (options != null) {
+			for (String s : options) {
+				anslist.add(s);
+			}
+		}
+		currentQuiz.setAnswers(i, anslist);
 		
 		if (token.equals("Next")) {
 			currentQuiz.setNextQuestionNumber();
@@ -73,7 +79,7 @@ public class MultiplePageServlet extends HttpServlet {
 			
 			/* Update quiz records and achievements. */
 			String username = (String) request.getSession().getAttribute("username");
-			int quizId = (int) request.getSession().getAttribute("quizId");
+			int quizId = (Integer) request.getSession().getAttribute("quizId");
 			QuizManager quizManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
 			UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
 			/* Insert to quiz records. */

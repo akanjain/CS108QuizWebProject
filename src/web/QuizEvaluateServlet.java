@@ -51,9 +51,14 @@ public class QuizEvaluateServlet extends HttpServlet {
 		int numQuestion = (Integer) request.getSession().getAttribute("currentQuizTotalQuestions");
 		
 		for (int i = 0; i < numQuestion; i++) {
-			String userAnswer = request.getParameter("answer-" + i);
+			Question qt = currentQuiz.getCurrentQuestion(i);
 			List<String> anslist = new ArrayList<String>();
-			anslist.add(userAnswer);
+			String[] options = request.getParameterValues("answer-" + i);
+			if (options != null) {
+				for (String s : options) {
+					anslist.add(s);
+				}
+			}
 			currentQuiz.setAnswers(i, anslist);
 		}
 		
@@ -65,10 +70,10 @@ public class QuizEvaluateServlet extends HttpServlet {
 		
 		/* Update quiz records and achievements. */
 		String username = (String) request.getSession().getAttribute("username");
-		int quizId = (int) request.getSession().getAttribute("quizId");
-		QuizManager quizManager = (QuizManager) request.getSession().getAttribute("Quiz Manager");
-		UserDataManager userDataManager = (UserDataManager) request.getSession().getAttribute("User Data Manager");
-				
+		int quizId = (Integer) request.getSession().getAttribute("quizId");
+		QuizManager quizManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
+		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
+		
 		/* Insert to quiz records. */
 		quizManager.addUserQuizRecord(username, quizId, (int) totalTime , score);
 				

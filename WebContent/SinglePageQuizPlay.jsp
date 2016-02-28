@@ -46,7 +46,7 @@
 			for (int j = 0; j < allQuestionOption.size(); j++) {
 %>
 				<input type="text" value="<%= allQuestionOption.get(j) %>">
-				<select name="answer-<%= currentQuiz.getCurrentQuestionNumber() + "," + j %>">
+				<select name="answer-<%= currentQuiz.getCurrentQuestionNumber() %>">
 				<option value="None selected">Please select below</option>
 <%
 				for (String ans : allAnswerOption) {
@@ -62,7 +62,7 @@
 			int slots = qt.getNumSlot();
 			for (int ct = 0; ct < slots; ct++) {
 %>
-				Enter Answer <%= ct+1 %>: <input type="text" name="answer-<%= currentQuiz.getCurrentQuestionNumber() + "," + ct %>" size="100" value=""><br>
+				Enter Answer <%= ct+1 %>: <input type="text" name="answer-<%= currentQuiz.getCurrentQuestionNumber() %>" size="100" value=""><br>
 <%
 				
 			}
