@@ -11,11 +11,18 @@
 	<%
 		String username = (String) request.getSession().getAttribute("username");	
 		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
+		QuizManager quizManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
 		if (!userDataManager.isAdministrator(username)) {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("permissionDenied.jsp");
 			dispatcher.forward(request, response);
 		}
 	%>
+	<h1>Site Statistics</h1>
+	<p> Total Users:  <%= userDataManager.getNumUsers() %> </p>
+	<p> Total Quizzes:  <%= quizManager.getNumQuizzes() %> </p>
+	<p> Total Play Count:  <%= quizManager.getNumQuizRecords() %> </p>
+	
+	
 	<form action="AdministratorToolsServlet" method="post">
 	<p>
 		<input type="hidden" name="option" value="Create Announcement">

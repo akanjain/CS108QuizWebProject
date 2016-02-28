@@ -315,6 +315,21 @@ public class UserDataManager {
 		
 	}
 	
+	public int getNumUsers() {
+		int num = -1;
+		
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM accounts;");
+			rs.next();
+			num = rs.getInt(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return num;
+	}
+	
 
 }
 

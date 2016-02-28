@@ -312,4 +312,33 @@ public class QuizManager {
 			e.printStackTrace();
 		}
 	}
+	
+	public int getNumQuizzes() {
+		int num = -1;
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes;");
+			rs.next();
+			num = rs.getInt(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return num;
+	}
+	
+	public int  getNumQuizRecords() {
+		int num = -1;
+		
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM quizRecords;");
+			rs.next();
+			num = rs.getInt(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return num;
+	}
 }
