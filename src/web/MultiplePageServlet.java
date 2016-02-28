@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import web.UserDataManager.Achievements;
+
 /**
  * Servlet implementation class MultiplePageServlet
  */
@@ -68,6 +70,17 @@ public class MultiplePageServlet extends HttpServlet {
 			long totalTime = TimeUnit.MILLISECONDS.toSeconds(end-start);
 			String timeTaken = totalTime + " seconds";
 			request.setAttribute("elapsedTime", timeTaken);
+			
+			/* Update quiz records and achievements. */
+			String username = (String) request.getSession().getAttribute("username");
+			int quizId = (int) request.getSession().getAttribute("quizId");
+			QuizManager quizManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
+			UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
+			/* Insert to quiz records. */
+			quizManager.addUserQuizRecord(username, quizId, (int) totalTime , score);
+			/* Update achievements. */
+			userDataManager.updateUserAchievements(Achievements.TAKE_QUIZ, username, quizId, score);
+
 			RequestDispatcher dispatcher = request.getRequestDispatcher("QuizPlayResult.jsp");
 			dispatcher.forward(request, response);
 		}

@@ -45,6 +45,8 @@ public class QuizPlayServlet extends HttpServlet {
 		QuizManager QzManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
 		
 		int quizId = Integer.parseInt(request.getParameter("quizId"));
+		request.getSession().setAttribute("quizId", quizId);
+
 		String quizMode = request.getParameter("quizMode");
 		
 		if (quizMode.equals("realtest")) {

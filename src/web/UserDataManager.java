@@ -225,18 +225,18 @@ public class UserDataManager {
 	public enum Achievements {
 		CREATE_QUIZ,
 		TAKE_QUIZ,
-		HIGH_SCORE,
 		PRACTICE_MODE 
 	};
 	
 	// TODO: tests this function. 
-	public void updateUserAchievements (Achievements ach, String username, String quizId, int score) {
+	public void updateUserAchievements (Achievements ach, String username, int quizId, int score) {
 		ResultSet rs;
 		
 		try {
 			switch (ach) {
 				case CREATE_QUIZ:
 					rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes WHERE creatorUsername = \"" + username + "\";");
+					rs.next();
 					int numCreated = rs.getInt(1);
 					if (numCreated == 1) { 
 						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Amateur Author\");");
@@ -247,21 +247,30 @@ public class UserDataManager {
 					}				
 					break;					
 				case TAKE_QUIZ:
+					
+					/* Check number of quiz a user took. */
 					rs = stmt.executeQuery("SELECT COUNT(*) FROM quizRecords WHERE username = \"" + username + "\";");
+					rs.next();
 					int numPlayed = rs.getInt(1);
 					if (numPlayed == 10) {
 						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Quiz Machine\");");
 					}			
-					break;
-				case HIGH_SCORE:
+
+					/* Check if user get the highest score. */
 					/* Add only when user get highest score on a quiz and does not already have this achievements. */
 					rs = stmt.executeQuery("SELECT * FROM achievements WHERE username = \"" + username + "\";");
 					if (!rs.isBeforeFirst()) {
 						rs = stmt.executeQuery("SELECT score FROM quizRecords WHERE quizId = \"" + quizId + "\" ORDER BY score DESC LIMIT 1;");
-						int maxScore = rs.getInt(1);
-						if (score > maxScore) {
+						if (!rs.isBeforeFirst()) {
 							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"I am the Greatest\");");
+						} else {
+							rs.next();
+							int maxScore = rs.getInt(1);
+							if (score == maxScore) {
+								stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"I am the Greatest\");");
+							}
 						}
+						
 					}					
 					break;
 				case PRACTICE_MODE:
@@ -305,6 +314,8 @@ public class UserDataManager {
 		return rs;
 		
 	}
+	
+
 }
 
 

@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import web.UserDataManager.Achievements;
+
 /**
  * Servlet implementation class QuizCreator
  */
@@ -41,6 +43,8 @@ public class QuizCreatorServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		ServletContext sc = request.getServletContext();
 		QuizManager QzManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
+		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
+		String username = (String) request.getSession().getAttribute("username");
 		
 		String quizTitle = request.getParameter("quizTitle");
 		String quizDescription = request.getParameter("quizDescription");
@@ -67,6 +71,7 @@ public class QuizCreatorServlet extends HttpServlet {
 		}
 		int numQuestions = Integer.parseInt(request.getParameter("numQuestion"));
 		int quizNum = QzManager.createQuiz(quizTitle, quizDescription, quizCategory, creatorName, dateCreated, isRandom, isOnePage, isImmediate, isPracticeMode, numQuestions);
+		userDataManager.updateUserAchievements(Achievements.CREATE_QUIZ, username, quizNum, 0);
 		session.setAttribute("quizNumber", quizNum);
 		session.setAttribute("currentQuestion", 1);
 		session.setAttribute("numQuestion", numQuestions);

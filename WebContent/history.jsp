@@ -18,11 +18,11 @@
 		out.println("<h1>You have no quiz taking history. Try to take soms quizzes!</h1>");
 	} else {
 		while (rs.next()) {
-			String subject = rs.getString("quizSubject");
+			String subject = rs.getString("title");
 			String time = rs.getString("time");
 			String score = rs.getString("score");
 			String duration = rs.getString("duration");
-			out.println("Subject: " + subject + " , time: " + time + " , score: " + score + " , time used: " + duration);
+			out.println("<p>quiz name: " + subject + " , time: " + time + " , score: " + score + " , time used: " + duration + "</p>");
 		}
 	}
 %>

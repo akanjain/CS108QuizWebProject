@@ -223,4 +223,93 @@ public class QuizManager {
 			return null;
 		}
 	}
+	
+	public String clearQuizHistory(int quizNumber) {
+		String timeStamp = ClockTimeStamp.getTimeStamp();
+		String returnStatus = "(" + timeStamp + ") Quiz Records hvae been successfully cleared"; 
+		
+		try {
+			
+			if (!quizExist(quizNumber)) {
+				returnStatus = "(" + timeStamp + ") The quiz you entered does not exist!";
+				return returnStatus;
+			}
+			
+			stmt.executeUpdate("DELETE FROM quizRecords WHERE quizId = " + quizNumber + ";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return returnStatus;
+	}
+	
+	private boolean quizExist(int quizNumber) {
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE quizId = " + quizNumber + ";" );
+			return rs.isBeforeFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/* Should not reach here. */
+		assert false;
+		return false;
+	}
+	
+	private void removeQuestion(int questionNumber) {
+		try {
+			stmt.executeUpdate("DELETE FROM answerOptions WHERE questionId = " + questionNumber + ";");
+			stmt.executeUpdate("DELETE FROM answers WHERE questionId = " + questionNumber + ";");
+			stmt.executeUpdate("DELETE FROM questions WHERE questionId = " + questionNumber + ";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public String removeQuiz(int quizNumber) {
+		String timeStamp = ClockTimeStamp.getTimeStamp();
+		String returnStatus = "(" + timeStamp + ") Quiz has been successfully removed.";
+		
+		/* Check quiz existence. */
+		if (!quizExist(quizNumber)) {
+			returnStatus = "(" + timeStamp + ") The quiz you entered does not exist!";
+			return returnStatus;
+		}
+		
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT questionId from questions WHERE quizId = " + quizNumber + ";");
+			List<Integer> questions = new LinkedList<Integer>();
+			
+			while (rs.next()) {
+				questions.add(rs.getInt("questionId"));
+			}
+			
+			/* Remove each question. */
+			for (int questionId : questions) {
+				removeQuestion(questionId);
+			}
+			
+			stmt.executeUpdate("DELETE FROM quizzes WHERE quizId = " +  quizNumber + ';');
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		return returnStatus;
+		
+	}
+	
+	public void addUserQuizRecord(String username, int quizId, int totalTime, int score) {
+		String timeStamp = ClockTimeStamp.getTimeStamp();
+		try {
+			stmt.executeUpdate("INSERT INTO quizRecords VALUES (\"" + username + "\"," + quizId + ",\"" + timeStamp + "\"," + totalTime + "," + score + ");");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
