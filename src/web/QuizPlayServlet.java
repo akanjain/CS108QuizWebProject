@@ -81,7 +81,7 @@ public class QuizPlayServlet extends HttpServlet {
 						List<String> options = new ArrayList<String>();
 						while (answerOptRs.next()) {
 							if (answerOptRs.getString("isCorrect").equals("true")) {
-								ans.add(answerOptRs.getString("optionText"));
+								ans.add(answerOptRs.getString("optionText").toLowerCase());
 								options.add(answerOptRs.getString("optionText"));
 							} else {
 								options.add(answerOptRs.getString("optionText"));
@@ -94,14 +94,14 @@ public class QuizPlayServlet extends HttpServlet {
 						List<String> answers = new ArrayList<String>();
 						while (matchOptRs.next()) {
 							options.add(matchOptRs.getString("optionText"));
-							answers.add(matchOptRs.getString("matchingText"));
+							answers.add(matchOptRs.getString("matchingText").toLowerCase());
 						}
 						qs.setQuestionOptions(options);
 						qs.setAnswerOptions(answers);
 					} else {
 						ResultSet answerRs = QzManager.getAnswer(allQuesId.get(i));
 						while (answerRs.next()) {
-							ans.add(answerRs.getString("answer"));	
+							ans.add(answerRs.getString("answer").toLowerCase());	
 						}
 						if (allQuesType.get(i).equals("multiple-answer-ordered")) {
 							qs.setNumSlot(ans.size());

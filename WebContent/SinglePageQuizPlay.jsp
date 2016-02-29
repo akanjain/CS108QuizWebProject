@@ -23,6 +23,13 @@
 			<p><b>Question <%= count %> of <%= numQuestion %>: </b></p>
 			<img src=<%= qt.getQuestion() %> alt="Image not displayed."><br><br>
 <%
+		} else if (qt instanceof FillInBlankQuestion) {
+			String[] parts = qt.getQuestion().split("_____");
+%>		
+			<p><b>Question <%= count %> of <%= numQuestion %>: </b><%= parts[0] %>
+			<input type="text" name="answer-<%= currentQuiz.getCurrentQuestionNumber() %>" size="50" value="">
+			<%= parts[1] %></p>
+<%
 		} else {
 %>		
 			<p><b>Question <%= count %> of <%= numQuestion %>: </b><%= qt.getQuestion() %></p>
@@ -66,6 +73,10 @@
 <%
 				
 			}
+		} else if (qt instanceof FillInBlankQuestion) {
+%>
+			Enter Fill In Blank Answer in the text box above.<br>	
+<%
 		} else {
 %>
 			Enter Answer: <input type="text" name="answer-<%= currentQuiz.getCurrentQuestionNumber() %>" size="100" value=""><br>	

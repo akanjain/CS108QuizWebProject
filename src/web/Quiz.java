@@ -67,7 +67,7 @@ public class Quiz {
 			} else {
 				Set<String> validAnswers = q.getAnswers();
 				for (String s : inputans) {
-					if (validAnswers.contains(s)) {
+					if (validAnswers.contains(s.toLowerCase())) {
 						score++;
 					}
 				}
@@ -90,7 +90,7 @@ public class Quiz {
 		} else {
 			Set<String> validAnswers = q.getAnswers();
 			for (String s : inputans) {
-				if (validAnswers.contains(s)) {
+				if (validAnswers.contains(s.toLowerCase())) {
 					score++;
 				}
 			}
