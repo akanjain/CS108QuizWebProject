@@ -454,6 +454,45 @@ public class UserDataManager {
 		return num;
 	}
 	
+	public String removeUser(String username) {
+		String returnStatus = "The user has been successfully removed";
+		
+		if (!accountManager.accountExist(username)) {
+			return "This account does not exist!";
+		}
+		
+		try {
+			
+			/* Delete User Message. */
+			stmt.executeUpdate("DELETE FROM messages WHERE fromUser = \"" + username + "\" OR toUser = \"" + username + "\";");
+		
+			/* Delete Challenges. */
+			stmt.executeUpdate("DELETE FROM challenges WHERE fromUser = \"" + username + "\" OR toUser = \"" + username + "\";");
+			
+			/* Delete friend relationship. */
+			stmt.executeUpdate("DELETE FROM friends WHERE fromUser = \"" + username + "\" OR toUser = \"" + username + "\";");
+			
+			/* Delete friend request. */
+			stmt.executeUpdate("DELETE FROM friendRequests WHERE fromUser = \"" + username + "\" OR toUser = \"" + username + "\";");
+			
+			/* Delete achievements. */
+			stmt.executeUpdate("DELETE FROM achievements WHERE username = \"" + username + "\";");
+			
+			/* Delete announcements. */
+			stmt.executeUpdate("DELETE FROM announcements WHERE username = \"" + username + "\";");
+			
+			/* Delete playing records. */
+			stmt.executeUpdate("DELETE FROM quizRecords WHERE username = \"" + username + "\";");
+			
+			/* Delete acccounts. */
+			stmt.executeUpdate("DELETE FROM accounts WHERE username = \"" + username + "\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return returnStatus;
+	}
+	
 
 }
 
