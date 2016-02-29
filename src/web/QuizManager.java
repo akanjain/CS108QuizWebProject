@@ -263,6 +263,10 @@ public class QuizManager {
 			//TODO: Akanksha, Please filling your code here to remove corresponding answers
 			// in answerOptions, answers, matchingOptions, numSlots
 			
+			stmt.executeUpdate("DELETE FROM answers WHERE questionId = " + questionNumber + ";");
+			stmt.executeUpdate("DELETE FROM answerOptions WHERE questionId = " + questionNumber + ";");
+			stmt.executeUpdate("DELETE FROM matchingOptions WHERE questionId = " + questionNumber + ";");
+			stmt.executeUpdate("DELETE FROM numberSlots WHERE questionId = " + questionNumber + ";");
 			
 			/* Delete question. */
 			stmt.executeUpdate("DELETE FROM questions WHERE questionId = " + questionNumber + ";");

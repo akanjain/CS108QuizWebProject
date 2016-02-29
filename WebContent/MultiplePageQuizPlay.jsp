@@ -18,12 +18,12 @@
 <%
 	if (currentQuizQuestion < numQuestion) {
 %>
-		<h3>Press Next to go to next question</h3>
+		<h3>Press "Submit" button to submit answer and go to next question.</h3>
 <%
 	}
 	if (currentQuizQuestion == numQuestion) {
 %>
-		<h3>Press Submit to submit quiz</h3>
+		<h3>Press "Submit Quiz" to submit quiz and view total Quiz Score.</h3>
 <%
 	}
 %>
@@ -88,7 +88,7 @@
 <%
 	if (currentQuizQuestion < numQuestion) {
 %>
-<input type="submit" name ="token" value="Next" />
+<input type="submit" name ="token" value="Submit" />
 <%
 	}
 	if (currentQuizQuestion == numQuestion) {

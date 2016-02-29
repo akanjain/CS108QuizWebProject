@@ -118,6 +118,7 @@ public class QuizPlayServlet extends HttpServlet {
 				session.setAttribute("currentQuiz", currentQuiz);
 				session.setAttribute("currentQuizQuestion", 1);
 				session.setAttribute("currentQuizTotalQuestions", numQuestions);
+				session.setAttribute("isImmediate", isImmediate);
 				currentQuiz.setQuestionIndexes();
 
 				

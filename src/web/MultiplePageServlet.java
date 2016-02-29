@@ -49,24 +49,49 @@ public class MultiplePageServlet extends HttpServlet {
 		Quiz currentQuiz = (Quiz) request.getSession().getAttribute("currentQuiz");
 		int currentQuizQuestion = (Integer) request.getSession().getAttribute("currentQuizQuestion");
 		int numQuestion = (Integer) request.getSession().getAttribute("currentQuizTotalQuestions");
+		String isImm = (String) request.getSession().getAttribute("isImmediate");
 		
 		String token = request.getParameter("token");
 		
-		int i = currentQuiz.getCurrentQuestionNumber();
-		Question qt = currentQuiz.getCurrentQuestion(i);
-		List<String> anslist = new ArrayList<String>();
-		String[] options = request.getParameterValues("answer-" + i);
-		if (options != null) {
-			for (String s : options) {
-				anslist.add(s);
+		if (token.equals("Submit") || token.equals("Submit Quiz")) {
+			int i = currentQuiz.getCurrentQuestionNumber();
+			Question qt = currentQuiz.getCurrentQuestion(i);
+			List<String> anslist = new ArrayList<String>();
+			String[] options = request.getParameterValues("answer-" + i);
+			if (options != null) {
+				for (String s : options) {
+					anslist.add(s);
+				}
 			}
+			currentQuiz.setAnswers(i, anslist);
 		}
-		currentQuiz.setAnswers(i, anslist);
 		
-		if (token.equals("Next")) {
+		if (token.equals("Next Question")) {
 			currentQuiz.setNextQuestionNumber();
 			session.setAttribute("currentQuizQuestion", currentQuizQuestion+1);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("MultiplePageQuizPlay.jsp");
+			dispatcher.forward(request, response);
+		}
+		
+		if (token.equals("Submit")) {
+			if (isImm.equals("true")) {
+				int i = currentQuiz.getCurrentQuestionNumber();
+				request.setAttribute("QuestionScore", currentQuiz.getScore(i));
+				request.setAttribute("MaxScore", currentQuiz.getMaxScore(i));
+				RequestDispatcher dispatcher = request.getRequestDispatcher("ImmediateScorePage.jsp");
+				dispatcher.forward(request, response);
+			} else {
+				currentQuiz.setNextQuestionNumber();
+				session.setAttribute("currentQuizQuestion", currentQuizQuestion+1);
+				RequestDispatcher dispatcher = request.getRequestDispatcher("MultiplePageQuizPlay.jsp");
+				dispatcher.forward(request, response);
+			}
+		} else if (token.equals("Score Summary")) {
+			int score = Integer.parseInt(request.getParameter("Score"));
+			String timeTaken = request.getParameter("elapsedTime");
+			request.setAttribute("Score", score);
+			request.setAttribute("elapsedTime", timeTaken);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("QuizPlayResult.jsp");
 			dispatcher.forward(request, response);
 		} else if (token.equals("Submit Quiz")) {
 			long end = System.currentTimeMillis();
@@ -87,8 +112,16 @@ public class MultiplePageServlet extends HttpServlet {
 			/* Update achievements. */
 			userDataManager.updateUserAchievements(Achievements.TAKE_QUIZ, username, quizId, score);
 
-			RequestDispatcher dispatcher = request.getRequestDispatcher("QuizPlayResult.jsp");
-			dispatcher.forward(request, response);
+			if (isImm.equals("true")) {
+				int i = currentQuiz.getCurrentQuestionNumber();
+				request.setAttribute("QuestionScore", currentQuiz.getScore(i));
+				request.setAttribute("MaxScore", currentQuiz.getMaxScore(i));
+				RequestDispatcher dispatcher = request.getRequestDispatcher("ImmediateScorePage.jsp");
+				dispatcher.forward(request, response);
+			} else {
+				RequestDispatcher dispatcher = request.getRequestDispatcher("QuizPlayResult.jsp");
+				dispatcher.forward(request, response);
+			}
 		}
 	}
 
