@@ -76,6 +76,45 @@ public class Quiz {
 		return score;
 	}
 	
+	public int getScore(int key) {
+		int score = 0;
+		List<String> inputans = userAnswers.get(key);
+		Question q = allQuestions.get(key);
+		if (q instanceof MatchingQuestion) {
+			List<String> allAnswerOption = q.getAnswerOptions();
+			for (int i = 0; i < allAnswerOption.size(); i++) {
+				if (allAnswerOption.get(i).equalsIgnoreCase(inputans.get(i))) {
+					score++;
+				}
+			}
+		} else {
+			Set<String> validAnswers = q.getAnswers();
+			for (String s : inputans) {
+				if (validAnswers.contains(s)) {
+					score++;
+				}
+			}
+		}
+		return score;
+	}
+	
+	public int getMaxScore(int key) {
+		Question q = allQuestions.get(key);
+		if (q instanceof MatchingQuestion) {
+			List<String> allAnswerOption = q.getAnswerOptions();
+			return allAnswerOption.size();
+		} else if (q instanceof MultipleChoiceAnswerQuestion) {
+			Set<String> validAnswers = q.getAnswers();
+			return validAnswers.size();
+		} else if (q instanceof MultipleAnswerUnOrderedQuestion) {
+			return q.getNumSlot();
+		} else if (q instanceof MultipleAnswerOrderedQuestion) {
+			return q.getAnswers().size();
+		} else {
+			return 1;
+		}
+	}
+	
 	public String getAnswerAtQuestion(int quesNumber) {
 		if (userAnswers.containsKey(quesNumber)) {
 			return userAnswers.get(quesNumber).get(0);
