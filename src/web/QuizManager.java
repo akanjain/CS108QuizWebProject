@@ -244,7 +244,7 @@ public class QuizManager {
 		return returnStatus;
 	}
 	
-	private boolean quizExist(int quizNumber) {
+	public boolean quizExist(int quizNumber) {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE quizId = " + quizNumber + ";" );
 			return rs.isBeforeFirst();
@@ -260,9 +260,16 @@ public class QuizManager {
 	
 	private void removeQuestion(int questionNumber) {
 		try {
+			
+			/* Delete all answers of that question. */
 			stmt.executeUpdate("DELETE FROM answerOptions WHERE questionId = " + questionNumber + ";");
 			stmt.executeUpdate("DELETE FROM answers WHERE questionId = " + questionNumber + ";");
+			stmt.executeUpdate("DELETE FROM matchingOptions WHERE questionId = " + questionNumber + ";");
+			stmt.executeUpdate("DELETE FROM numberSlots WHERE questionId = " + questionNumber + ";");
+			
+			/* Delete question. */
 			stmt.executeUpdate("DELETE FROM questions WHERE questionId = " + questionNumber + ";");
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -281,6 +288,13 @@ public class QuizManager {
 		}
 		
 		try {
+			/* Delete challenges of the quiz. */
+			stmt.executeUpdate("DELETE FROM challenges WHERE quizId = " + quizNumber + ";");
+			
+			/* Delete playing record. */
+			clearQuizHistory(quizNumber);
+			
+			/* Delete questions of that quiz. */
 			ResultSet rs = stmt.executeQuery("SELECT questionId from questions WHERE quizId = " + quizNumber + ";");
 			List<Integer> questions = new LinkedList<Integer>();
 			
@@ -341,4 +355,5 @@ public class QuizManager {
 		
 		return num;
 	}
+
 }

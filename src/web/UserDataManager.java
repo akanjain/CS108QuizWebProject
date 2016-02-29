@@ -1,11 +1,16 @@
 package web;
 
+import java.io.PrintStream;
 import java.sql.ResultSet;
 import web.ClockTimeStamp;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class UserDataManager {
 	private Statement stmt;
@@ -50,6 +55,8 @@ public class UserDataManager {
 		return returnStatus;
 	}
 	
+	
+	
 	public ResultSet getUserFriendRequests(String username) {
 		ResultSet rs = null;
 		try {
@@ -61,31 +68,7 @@ public class UserDataManager {
 		return rs;
 	}
 	
-	/* Promote user to administrator. */
-	public String promoteUser(String username) {
-		String timeStamp = ClockTimeStamp.getTimeStamp();
-		String returnStatus = "(" + timeStamp + ")  " + username + " has been promoted to administrator.";
-		
-		if (!accountManager.accountExist(username)) {
-			return "(" + timeStamp + "), The user " + username + " does not exist.";
-		}
-		
-		if (isAdministrator(username)) {
-			return "(" + timeStamp + "), The user " + username + " already is an administrator";
-		}
-		
-		try {
-			
-			stmt.executeUpdate("UPDATE accounts SET isAdministrator=\"true\" WHERE username = \"" + username + "\";");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			returnStatus = ("(" + timeStamp + ") An DB error occurred: " + e.toString() );
-			e.printStackTrace();
-		}
-		
-		return returnStatus;
-		
-	}
+	
 
 	public String sendFriendRequest(String fromUser, String toUser, String message) {
 		String timeStamp = ClockTimeStamp.getTimeStamp();
@@ -175,6 +158,118 @@ public class UserDataManager {
 		assert false;
 		return false;
 	}
+	
+	/* Send a challenge, from fromUser to toUser on quizId, assuming all arguments are correct. */
+	public String sendChallenge(String fromUser, String toUser, int quizNumber) {
+		String timeStamp = ClockTimeStamp.getTimeStamp();
+		String returnStatus = "(" + timeStamp + ") Your challenge has been sent.";
+		
+		try {
+			stmt.executeUpdate("INSERT INTO challenges VALUES (\"" + fromUser + "\",\"" + toUser + "\",\"" + quizNumber + "\");");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			returnStatus = ("(" + timeStamp + ") An DB error occurred: " + e.toString() );
+			e.printStackTrace();
+		}
+		
+		return returnStatus;
+	}
+	
+	public List<Challenge> getUserChallengeStrings (String username) {
+		List<Challenge> challenges = new LinkedList<Challenge>();
+			
+		try {
+			ResultSet rs = getUserChallenges(username);
+			while(rs.next()) {
+				challenges.add(new Challenge(rs.getString("fromUser"), rs.getString("toUser"), rs.getInt("quizId")));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return challenges;
+	}
+	
+	
+	public void removeChallenge(String fromUser, String toUser, int quizId) {
+		try {
+			stmt.executeUpdate("DELETE FROM challenges WHERE fromUser = \"" + fromUser + "\" AND toUser = \"" + toUser + "\" AND quizId = " + quizId + ";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public class Challenge {
+		
+		private String fromUser;
+		private String toUser;
+		private int quizId;
+		
+		public Challenge (String fromUser, String toUser, int quizId) {
+			this.fromUser = fromUser;
+			this.toUser = toUser;
+			this.quizId = quizId;
+		}
+		
+		public String getFromUser() {
+			return fromUser;
+		}
+		
+		public String getToUser() {
+			return toUser;
+		}
+		
+		public int getQuizId() {
+			return quizId;
+		}
+		
+		public int getBestScore() {
+			return getUserBestScoreByQuiz(fromUser, quizId);
+		}
+		
+	}
+	private ResultSet getUserChallenges(String username) {
+		ResultSet rs = null;
+		
+		try {
+			rs = stmt.executeQuery("SELECT * FROM challenges WHERE toUser = \"" + username + "\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assert rs != null;
+		return rs;
+	}
+	
+	
+	/* Promote user to administrator. */
+	public String promoteUser(String username) {
+		String timeStamp = ClockTimeStamp.getTimeStamp();
+		String returnStatus = "(" + timeStamp + ")  " + username + " has been promoted to administrator.";
+		
+		if (!accountManager.accountExist(username)) {
+			return "(" + timeStamp + ") The user " + username + " does not exist.";
+		}
+		
+		if (isAdministrator(username)) {
+			return "(" + timeStamp + ") The user " + username + " already is an administrator";
+		}
+		
+		try {
+			
+			stmt.executeUpdate("UPDATE accounts SET isAdministrator=\"true\" WHERE username = \"" + username + "\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			returnStatus = ("(" + timeStamp + ") An DB error occurred: " + e.toString() );
+			e.printStackTrace();
+		}
+		
+		return returnStatus;
+		
+	}
+	
 	
 	/* Returns true is provided user is administrator. */
 	public boolean isAdministrator(String username) {
@@ -301,6 +396,19 @@ public class UserDataManager {
 		return rs;
 	}
 	
+	public ResultSet getUserFriends (String username) {
+		ResultSet rs = null;
+		
+		try {
+			rs = stmt.executeQuery("SELECT * FROM friends WHERE fromUser = \"" + username + "\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
+	
 	
 	public ResultSet getUserAchievements(String username) {
 		ResultSet rs = null;
@@ -313,6 +421,22 @@ public class UserDataManager {
 		}
 		return rs;
 		
+	}
+	
+	public int getUserBestScoreByQuiz(String username, int quizId) {
+		 int bestScore = -1;
+		
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT MAX(score) FROM quizRecords WHERE username = \"" + username + "\" AND quizId = \"" + quizId + "\";");
+			rs.next();
+			bestScore = rs.getInt("MAX(score)");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		assert bestScore != -1;
+		return bestScore;
 	}
 	
 	public int getNumUsers() {

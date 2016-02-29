@@ -22,7 +22,6 @@
 	<p> Total Quizzes:  <%= quizManager.getNumQuizzes() %> </p>
 	<p> Total Play Count:  <%= quizManager.getNumQuizRecords() %> </p>
 	
-	
 	<form action="AdministratorToolsServlet" method="post">
 	<p>
 		<input type="hidden" name="option" value="Create Announcement">
@@ -62,6 +61,8 @@
 			out.println(returnStatus);
 		}
 	%>
+	
+<p>Go back to <a href="homepage.jsp">Homepage</a></p>
 
 </body>
 </html>

@@ -20,8 +20,9 @@
 </head>
 <body>
 <h1>Welcome <%= username %></h1>
-<p><a href="message.jsp">Message</a></p>
-<p><a href="friendRequest.jsp">Friend Request</a></p>
+<p><a href="message.jsp">Messages</a></p>
+<p><a href="friendRequest.jsp">Friend Requests</a></p>
+<p><a href="challenge.jsp">Challenges</a>
 <p><a href="CreateQuiz.jsp">Create New Quiz</a></p>
 <p><u>List of all quizzes:</u></p>
 <ul>

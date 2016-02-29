@@ -26,5 +26,7 @@
 		}
 	}
 %>
+
+<p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>
