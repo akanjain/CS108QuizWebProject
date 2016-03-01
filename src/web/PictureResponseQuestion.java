@@ -7,6 +7,7 @@ public class PictureResponseQuestion extends Question {
 
 	private Set<String> ans;
 	private String questionText;
+	private String imageLocation;
 	
 	@Override
 	public String getQuestion() {
@@ -46,6 +47,9 @@ public class PictureResponseQuestion extends Question {
 	
 	public Set<String> getAnswers() {
 		return this.ans;
+	}
+	public void setImageLocation(String addr) {
+		this.imageLocation = addr;
 	}
 
 }

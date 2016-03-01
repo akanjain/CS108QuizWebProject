@@ -60,7 +60,8 @@ public class QuizPlayServlet extends HttpServlet {
 				if (isRandomOrder.equals("true")) {
 					randomQuizOrder = true;
 				}
-				Quiz currentQuiz = new Quiz(randomQuizOrder);
+				//TODO: edit the title to be put in appropriately
+				Quiz currentQuiz = new Quiz(randomQuizOrder, "");
 				QuestionsFactory factory = new QuestionsFactory();
 				rs = QzManager.getQuestion(quizId);
 				List<String> allQuesText = new ArrayList<String>();

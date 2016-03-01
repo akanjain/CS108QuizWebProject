@@ -3,13 +3,21 @@ package web;
 import java.util.*;
 
 public class Quiz {
+	public static final String NOT_SPECIFIED = "Not Specified";
+	
+	private String title;
+	private String category;
+	private String description;
 	private List<Question> allQuestions;
 	private List<Integer> index;
 	private Map<Integer, List<String>> userAnswers;
 	private int currentQuestion;
 	private boolean isRandom;
 	
-	public Quiz(boolean isRandom) {
+	public Quiz(boolean isRandom, String title) {
+		this.title = title;
+		this.category = NOT_SPECIFIED;
+		this.description = NOT_SPECIFIED;
 		this.allQuestions = new ArrayList<Question>();
 		this.index = new ArrayList<Integer>();
 		this.userAnswers = new HashMap<Integer, List<String>>();
@@ -126,5 +134,24 @@ public class Quiz {
 		return allQuestions.size();
 	}
 	
+	public String getQuizTitle() {
+		return title;
+	}
+	
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	public String getCategory() {
+		return this.category;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public String getDescription() {
+		return this.description;
+	}
 	
 }
