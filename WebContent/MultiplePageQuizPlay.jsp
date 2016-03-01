@@ -62,7 +62,11 @@
 			}
 		} else if (qt instanceof MatchingQuestion) {
 			List<String> allQuestionOption = qt.getQuestionOptions();
-			List<String> allAnswerOption = qt.getAnswerOptions();
+			List<String> allAnswerOption = new ArrayList<String>();
+			for (String a : qt.getAnswerOptions()) {
+				allAnswerOption.add(a);
+			}
+			Collections.shuffle(allAnswerOption);
 			for (int j = 0; j < allQuestionOption.size(); j++) {
 %>
 				<input type="text" value="<%= allQuestionOption.get(j) %>">
