@@ -15,6 +15,8 @@
 	int numQuestion = (Integer) request.getSession().getAttribute("currentQuizTotalQuestions");
 	int questionScore = (Integer) request.getAttribute("QuestionScore");
 	int maxScore = (Integer) request.getAttribute("MaxScore");
+	String isPracticeMode = (String) request.getSession().getAttribute("isPracticeMode");
+	int i = currentQuiz.getCurrentQuestionNumber();
 %>
 <h1>Score of Question <%= currentQuizQuestion %> of <%= numQuestion %>:</h1>
 <h3><%= questionScore %> correct answer out of total <%= maxScore %> correct answers.</h3>
@@ -25,14 +27,49 @@
 		Press <b>"Next Question"</b> button to go to next question.<br><br>
 		<input type="submit" name ="token" value="Next Question" />
 <%
+		if (isPracticeMode.equals("true")) {
+%>
+			<input type="submit" name ="token" value="End Practice" />
+<%
+			if (questionScore == maxScore) {
+				if (!(((PracticeQuiz) currentQuiz).increaseCount(i))) {
+%>
+					<input type="submit" name ="token" value="Remove Practice Question" />		
+<%	
+				}
+			} else {
+%>
+				<input type="submit" name ="token" value="Remove Practice Question" />			
+<%			
+			}
+		}
 	}
 	if (currentQuizQuestion == numQuestion) {
+		if (isPracticeMode.equals("false")) {
 %>
 		Press <b>"Score Summary"</b> to view total Quiz Score.<br><br>
 		<input type="hidden" name="Score" value=<%= (Integer) request.getAttribute("Score") %>>
 		<input type="hidden" name="elapsedTime" value=<%= (String) request.getAttribute("elapsedTime") %>>
 		<input type="submit" name ="token" value="Score Summary" />
 <%
+		} else if (isPracticeMode.equals("true")) {
+%>
+		Press <b>"Next Question"</b> button to go to next question.<br><br>
+		<input type="submit" name ="token" value="Next Question" />
+		<input type="submit" name ="token" value="End Practice" />
+<%
+			if (questionScore == maxScore) {
+				if (!(((PracticeQuiz) currentQuiz).increaseCount(i))) {
+%>
+					<input type="submit" name ="token" value="Remove Practice Question" />
+<%		
+				}
+			} else {
+%>
+				<input type="submit" name ="token" value="Remove Practice Question" />
+<%
+			}
+		}
 	}
 %>
 </form>

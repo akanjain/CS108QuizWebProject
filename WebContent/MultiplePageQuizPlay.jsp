@@ -13,6 +13,7 @@
 	Quiz currentQuiz = (Quiz) request.getSession().getAttribute("currentQuiz");
 	int currentQuizQuestion = (Integer) request.getSession().getAttribute("currentQuizQuestion");
 	int numQuestion = (Integer) request.getSession().getAttribute("currentQuizTotalQuestions");
+	String isPracticeMode = (String) request.getSession().getAttribute("isPracticeMode");
 %>
 <h1>Enter answers in the form below.</h1>
 <%
@@ -22,9 +23,15 @@
 <%
 	}
 	if (currentQuizQuestion == numQuestion) {
+		if (isPracticeMode.equals("false")) {
 %>
 		<h3>Press "Submit Quiz" to submit quiz and view total Quiz Score.</h3>
 <%
+		} else if (isPracticeMode.equals("true")) {
+%>
+		<h3>Press "Submit" button to submit answer and go to next question.</h3>
+<%		
+		}
 	}
 %>
 <form action="MultiplePageServlet" method="post">
@@ -107,8 +114,19 @@
 <%
 	}
 	if (currentQuizQuestion == numQuestion) {
+		if (isPracticeMode.equals("false")) {
 %>
 <input type="submit" name ="token" value="Submit Quiz" />
+<%
+		} else if (isPracticeMode.equals("true")) {
+%>
+<input type="submit" name ="token" value="Submit" />
+<%		
+		}
+	}
+	if (isPracticeMode.equals("true")) {
+%>
+<input type="submit" name ="token" value="End Practice" />
 <%
 	}
 %>

@@ -49,92 +49,100 @@ public class QuizPlayServlet extends HttpServlet {
 
 		String quizMode = request.getParameter("quizMode");
 		
-		if (quizMode.equals("realtest")) {
-			try {
-				ResultSet rs = QzManager.getQuiz(quizId);
-				rs.next();
-				String isRandomOrder = rs.getString("isRandom");
-				String isOnePageQuiz = rs.getString("isOnePage");
-				String isImmediate = rs.getString("isImmediate");
-				boolean randomQuizOrder = false;
-				if (isRandomOrder.equals("true")) {
-					randomQuizOrder = true;
-				}
-				//TODO: edit the title to be put in appropriately
-				Quiz currentQuiz = new Quiz(randomQuizOrder, "");
-				QuestionsFactory factory = new QuestionsFactory();
-				rs = QzManager.getQuestion(quizId);
-				List<String> allQuesText = new ArrayList<String>();
-				List<String> allQuesType = new ArrayList<String>();
-				List<Integer> allQuesId = new ArrayList<Integer>();
-				while (rs.next()) {
-					allQuesText.add(rs.getString("questionText"));
-					allQuesType.add(rs.getString("questionType"));
-					allQuesId.add(Integer.parseInt(rs.getString("questionId")));	
-				}
-				for (int i = 0; i < allQuesId.size(); i++) {
-					Question qs = factory.getQuestion(allQuesType.get(i));
-					currentQuiz.addQuestion(qs);
-					qs.setQuestion(allQuesText.get(i));
-					Set<String> ans = new HashSet<String>();
-					if (allQuesType.get(i).equals("multiple-choice") || allQuesType.get(i).equals("multiple-choice-multiple-answer")) {
-						ResultSet answerOptRs = QzManager.getAnswerOption(allQuesId.get(i));
-						List<String> options = new ArrayList<String>();
-						while (answerOptRs.next()) {
-							if (answerOptRs.getString("isCorrect").equals("true")) {
-								ans.add(answerOptRs.getString("optionText").toLowerCase());
-								options.add(answerOptRs.getString("optionText"));
-							} else {
-								options.add(answerOptRs.getString("optionText"));
-							}
-						}
-						qs.setQuestionOptions(options);
-					} if (allQuesType.get(i).equals("matching")) {
-						ResultSet matchOptRs = QzManager.getMatchingOption(allQuesId.get(i));
-						List<String> options = new ArrayList<String>();
-						List<String> answers = new ArrayList<String>();
-						while (matchOptRs.next()) {
-							options.add(matchOptRs.getString("optionText"));
-							answers.add(matchOptRs.getString("matchingText").toLowerCase());
-						}
-						qs.setQuestionOptions(options);
-						qs.setAnswerOptions(answers);
-					} else {
-						ResultSet answerRs = QzManager.getAnswer(allQuesId.get(i));
-						while (answerRs.next()) {
-							ans.add(answerRs.getString("answer").toLowerCase());	
-						}
-						if (allQuesType.get(i).equals("multiple-answer-ordered")) {
-							qs.setNumSlot(ans.size());
-						} else if (allQuesType.get(i).equals("multiple-answer-unordered")) {
-							ResultSet slotRs = QzManager.getAnswerSlot(allQuesId.get(i));
-							slotRs.next();
-							int numSlot = Integer.parseInt(slotRs.getString("numSlot"));
-							qs.setNumSlot(numSlot);
+		try {
+			ResultSet rs = QzManager.getQuiz(quizId);
+			rs.next();
+			String isRandomOrder = rs.getString("isRandom");
+			String isOnePageQuiz = rs.getString("isOnePage");
+			String isImmediate = rs.getString("isImmediate");
+			String isPracticeMode = rs.getString("isPracticeMode");
+			boolean randomQuizOrder = false;
+			if (isRandomOrder.equals("true")) {
+				randomQuizOrder = true;
+			}
+			Quiz currentQuiz = null;
+			if (quizMode.equals("realtest")) {
+				currentQuiz = new Quiz(randomQuizOrder);
+			} else if (quizMode.equals("practice")) {
+				currentQuiz = new PracticeQuiz(randomQuizOrder);
+			}
+			QuestionsFactory factory = new QuestionsFactory();
+			rs = QzManager.getQuestion(quizId);
+			List<String> allQuesText = new ArrayList<String>();
+			List<String> allQuesType = new ArrayList<String>();
+			List<Integer> allQuesId = new ArrayList<Integer>();
+			while (rs.next()) {
+				allQuesText.add(rs.getString("questionText"));
+				allQuesType.add(rs.getString("questionType"));
+				allQuesId.add(Integer.parseInt(rs.getString("questionId")));	
+			}
+			for (int i = 0; i < allQuesId.size(); i++) {
+				Question qs = factory.getQuestion(allQuesType.get(i));
+				currentQuiz.addQuestion(qs);
+				qs.setQuestion(allQuesText.get(i));
+				Set<String> ans = new HashSet<String>();
+				if (allQuesType.get(i).equals("multiple-choice") || allQuesType.get(i).equals("multiple-choice-multiple-answer")) {
+					ResultSet answerOptRs = QzManager.getAnswerOption(allQuesId.get(i));
+					List<String> options = new ArrayList<String>();
+					while (answerOptRs.next()) {
+						if (answerOptRs.getString("isCorrect").equals("true")) {
+							ans.add(answerOptRs.getString("optionText").toLowerCase());
+							options.add(answerOptRs.getString("optionText"));
+						} else {
+							options.add(answerOptRs.getString("optionText"));
 						}
 					}
-					qs.addAnswers(ans);
+					qs.setQuestionOptions(options);
+				} if (allQuesType.get(i).equals("matching")) {
+					ResultSet matchOptRs = QzManager.getMatchingOption(allQuesId.get(i));
+					List<String> options = new ArrayList<String>();
+					List<String> answers = new ArrayList<String>();
+					while (matchOptRs.next()) {
+						options.add(matchOptRs.getString("optionText"));
+						answers.add(matchOptRs.getString("matchingText").toLowerCase());
+					}
+					qs.setQuestionOptions(options);
+					qs.setAnswerOptions(answers);
+				} else {
+					ResultSet answerRs = QzManager.getAnswer(allQuesId.get(i));
+					while (answerRs.next()) {
+						ans.add(answerRs.getString("answer").toLowerCase());	
+					}
+					if (allQuesType.get(i).equals("multiple-answer-ordered")) {
+						qs.setNumSlot(ans.size());
+					} else if (allQuesType.get(i).equals("multiple-answer-unordered")) {
+						ResultSet slotRs = QzManager.getAnswerSlot(allQuesId.get(i));
+						slotRs.next();
+						int numSlot = Integer.parseInt(slotRs.getString("numSlot"));
+						qs.setNumSlot(numSlot);
+					}
 				}
-				int numQuestions = currentQuiz.getNumQuestion();
-				session.setAttribute("currentQuiz", currentQuiz);
-				session.setAttribute("currentQuizQuestion", 1);
-				session.setAttribute("currentQuizTotalQuestions", numQuestions);
-				session.setAttribute("isImmediate", isImmediate);
-				currentQuiz.setQuestionIndexes();
+				qs.addAnswers(ans);
+			}
+			int numQuestions = currentQuiz.getNumQuestion();
+			session.setAttribute("currentQuiz", currentQuiz);
+			session.setAttribute("currentQuizQuestion", 1);
+			session.setAttribute("currentQuizTotalQuestions", numQuestions);
+			session.setAttribute("isImmediate", isImmediate);
+			if (quizMode.equals("practice")) {
+				session.setAttribute("isPracticeMode", "true");
+			} else {
+				session.setAttribute("isPracticeMode", "false");
+			}
+			currentQuiz.setQuestionIndexes();
 
 				
-				RequestDispatcher dispatcher = request.getRequestDispatcher("SinglePageQuizPlay.jsp");
-				if (isOnePageQuiz.equals("false")) {				
-					currentQuiz.setNextQuestionNumber();
-					dispatcher = request.getRequestDispatcher("MultiplePageQuizPlay.jsp");
-				}
-				long start = System.currentTimeMillis();
-				session.setAttribute("startTime", start);
-				dispatcher.forward(request, response);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			RequestDispatcher dispatcher = request.getRequestDispatcher("SinglePageQuizPlay.jsp");
+			if (isOnePageQuiz.equals("false") || quizMode.equals("practice")) {				
+				currentQuiz.setNextQuestionNumber();
+				dispatcher = request.getRequestDispatcher("MultiplePageQuizPlay.jsp");
 			}
+			long start = System.currentTimeMillis();
+			session.setAttribute("startTime", start);
+			dispatcher.forward(request, response);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

@@ -3,21 +3,13 @@ package web;
 import java.util.*;
 
 public class Quiz {
-	public static final String NOT_SPECIFIED = "Not Specified";
-	
-	private String title;
-	private String category;
-	private String description;
 	private List<Question> allQuestions;
 	private List<Integer> index;
 	private Map<Integer, List<String>> userAnswers;
 	private int currentQuestion;
 	private boolean isRandom;
 	
-	public Quiz(boolean isRandom, String title) {
-		this.title = title;
-		this.category = NOT_SPECIFIED;
-		this.description = NOT_SPECIFIED;
+	public Quiz(boolean isRandom) {
 		this.allQuestions = new ArrayList<Question>();
 		this.index = new ArrayList<Integer>();
 		this.userAnswers = new HashMap<Integer, List<String>>();
@@ -28,6 +20,10 @@ public class Quiz {
 	public void addQuestion(Question qs) {
 		this.index.add(this.index.size());
 		this.allQuestions.add(qs);
+	}
+	
+	public int getQuestionListSize() {
+		return this.index.size();
 	}
 	
 	public void setQuestionIndexes() {
@@ -52,7 +48,23 @@ public class Quiz {
 		this.currentQuestion++;
 	}
 	
+	public void resetNextQuestionNumber() {
+		this.currentQuestion = 0;
+	}
+	
 	public void setPreviousQuestionNumber() {
+		this.currentQuestion--;
+	}
+	
+	public void removeQuestionIndex(int key) {
+		int idx = 0;
+		for (int i = 0; i < index.size(); i++) {
+			if (index.get(i) == key) {
+				idx = i;
+				break;
+			}
+		}
+		index.remove(idx);
 		this.currentQuestion--;
 	}
 	
@@ -131,27 +143,8 @@ public class Quiz {
 	}
 	
 	public int getNumQuestion() {
-		return allQuestions.size();
+		return index.size();
 	}
 	
-	public String getQuizTitle() {
-		return title;
-	}
-	
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	
-	public String getCategory() {
-		return this.category;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public String getDescription() {
-		return this.description;
-	}
 	
 }

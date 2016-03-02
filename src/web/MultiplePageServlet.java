@@ -50,6 +50,7 @@ public class MultiplePageServlet extends HttpServlet {
 		int currentQuizQuestion = (Integer) request.getSession().getAttribute("currentQuizQuestion");
 		int numQuestion = (Integer) request.getSession().getAttribute("currentQuizTotalQuestions");
 		String isImm = (String) request.getSession().getAttribute("isImmediate");
+		String isPracticeMode = (String) request.getSession().getAttribute("isPracticeMode");
 		
 		String token = request.getParameter("token");
 		
@@ -66,18 +67,46 @@ public class MultiplePageServlet extends HttpServlet {
 			currentQuiz.setAnswers(i, anslist);
 		}
 		
-		if (token.equals("Next Question")) {
-			currentQuiz.setNextQuestionNumber();
-			session.setAttribute("currentQuizQuestion", currentQuizQuestion+1);
-			RequestDispatcher dispatcher = request.getRequestDispatcher("MultiplePageQuizPlay.jsp");
+		if (token.equals("End Practice")) {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("PracticeEnd.jsp");
 			dispatcher.forward(request, response);
 		}
 		
+		if (token.equals("Remove Practice Question")) {
+			((PracticeQuiz) currentQuiz).removePracticeQuestion(currentQuiz.getCurrentQuestionNumber());
+			RequestDispatcher dispatcher = request.getRequestDispatcher("RemovePracticeQuestion.jsp");
+			dispatcher.forward(request, response);
+		}
+		
+		if (token.equals("Next Question")) {
+			if (currentQuizQuestion == numQuestion && isPracticeMode.equals("true")) {
+				currentQuiz.resetNextQuestionNumber();
+				session.setAttribute("currentQuizQuestion", 1);
+				session.setAttribute("currentQuizTotalQuestions", currentQuiz.getNumQuestion());
+				currentQuiz.setQuestionIndexes();
+				if (currentQuiz.getNumQuestion() == 0) {
+					RequestDispatcher dispatcher = request.getRequestDispatcher("PracticeEnd.jsp");
+					dispatcher.forward(request, response);
+				} else {
+					RequestDispatcher dispatcher = request.getRequestDispatcher("MultiplePageQuizPlay.jsp");
+					dispatcher.forward(request, response);
+				}
+			} else {
+				currentQuiz.setNextQuestionNumber();
+				session.setAttribute("currentQuizQuestion", currentQuizQuestion+1);
+				RequestDispatcher dispatcher = request.getRequestDispatcher("MultiplePageQuizPlay.jsp");
+				dispatcher.forward(request, response);
+			}
+		}
+		
 		if (token.equals("Submit")) {
-			if (isImm.equals("true")) {
+			if (isImm.equals("true") || isPracticeMode.equals("true")) {
 				int i = currentQuiz.getCurrentQuestionNumber();
 				request.setAttribute("QuestionScore", currentQuiz.getScore(i));
 				request.setAttribute("MaxScore", currentQuiz.getMaxScore(i));
+				//if (isPracticeMode.equals("true") && (currentQuiz.getScore(i) == currentQuiz.getMaxScore(i))) {
+				//	((PracticeQuiz) currentQuiz).increaseCount(i);
+				//}
 				RequestDispatcher dispatcher = request.getRequestDispatcher("ImmediateScorePage.jsp");
 				dispatcher.forward(request, response);
 			} else {
