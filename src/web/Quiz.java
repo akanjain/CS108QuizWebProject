@@ -135,11 +135,26 @@ public class Quiz {
 		}
 	}
 	
+	public int getTotalMaxScore() {
+		int maxScore = 0;
+		for (int key : userAnswers.keySet()) {
+			maxScore += getMaxScore(key);
+		}
+		return maxScore;
+	}
+	
 	public String getAnswerAtQuestion(int quesNumber) {
 		if (userAnswers.containsKey(quesNumber)) {
 			return userAnswers.get(quesNumber).get(0);
 		}
 		return "";
+	}
+	
+	public List<String> getAnswerListAtQuestion(int quesNumber) {
+		if (userAnswers.containsKey(quesNumber)) {
+			return userAnswers.get(quesNumber);
+		}
+		return null;
 	}
 	
 	public int getNumQuestion() {
