@@ -17,7 +17,6 @@ public class PracticeQuiz extends Quiz {
 	
 	public boolean increaseCount(int key) {
 		if (countMap.get(key) == 2) {
-			System.out.println("Removing question");
 			countMap.remove(key);
 			removeQuestionIndex(key);
 			return true;
@@ -29,7 +28,6 @@ public class PracticeQuiz extends Quiz {
 	
 	public void removePracticeQuestion(int key) {
 		if (countMap.containsKey(key)) {
-			System.out.println("Removing question");
 			countMap.remove(key);
 			removeQuestionIndex(key);
 		}
