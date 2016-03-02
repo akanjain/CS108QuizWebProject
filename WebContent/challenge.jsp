@@ -18,11 +18,12 @@
 
 	<%
 	
-		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
+		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");	
+		userDataManager.markUserAllChallengesViewed(username);
+		
 		ResultSet rs = userDataManager.getUserFriends(username);
 		
 		out.println("<form action=\"ChallengeServlet\" method=\"post\">");
-		
 		while (rs.next()) {
 			out.println("<p><input type=\"radio\" name=\"toUser\" value=\"" + rs.getString("toUser") + "\">" + rs.getString("toUser") + "</p>");
 		}

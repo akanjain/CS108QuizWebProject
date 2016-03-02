@@ -32,6 +32,28 @@ public class UserDataManager {
 		return rs;
 	}
 	
+	public int getUserNumNewMessages(String username) {
+		int num = -1;
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM messages WHERE toUser = \"" + username + "\" AND viewed = \"false\";");
+			rs.next();
+			num = rs.getInt(1);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
+		return num;
+	}
+	
+	public void markUserAllMessagesViewed(String username) {
+		try {
+			stmt.executeUpdate("UPDATE messages SET viewed = \"true\" WHERE toUser = \"" + username + "\" AND viewed = \"false\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public String sendMessage(String fromUser, String toUser, String message) {
 		String timeStamp = ClockTimeStamp.getTimeStamp();
 		String returnStatus = "(" + timeStamp + ") Message successfully sent.";
@@ -41,11 +63,9 @@ public class UserDataManager {
 			if (!accountManager.accountExist(toUser)) {
 				return "(" + timeStamp + ") The user " + toUser + " does not exist.";
 			}
-			
-
-			
+					
 			/* Send message. */
-			stmt.executeUpdate("INSERT INTO messages VALUES (\"" + fromUser + "\",\"" + toUser + "\",\"" + timeStamp + "\",\"" + message + "\");");
+			stmt.executeUpdate("INSERT INTO messages VALUES (\"" + fromUser + "\",\"" + toUser + "\",\"" + timeStamp + "\",\"" + message + "\",\"false\");");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			returnStatus = ("(" + timeStamp + ") An DB error occurred: " + e.toString() );
@@ -67,9 +87,28 @@ public class UserDataManager {
 	
 		return rs;
 	}
+		
+	public int getUserNumNewFriendRequests(String username) {
+		int num = -1;
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM friendRequests WHERE toUser = \"" + username + "\" AND viewed = \"false\";");
+			rs.next();
+			num = rs.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return num;
+	}
 	
+	public void markUserAllFriendRequestsViewed(String username) {
+		try {
+			stmt.executeUpdate("UPDATE friendRequests SET viewed = \"true\" WHERE toUser = \"" + username + "\" AND viewed = \"false\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
-
 	public String sendFriendRequest(String fromUser, String toUser, String message) {
 		String timeStamp = ClockTimeStamp.getTimeStamp();
 		String returnStatus = "(" + timeStamp + ") Request successfully sent to user" + toUser + ".";
@@ -103,7 +142,7 @@ public class UserDataManager {
 			}
 					
 			/* Insert friendRequest. */
-			stmt.executeUpdate("INSERT INTO friendRequests VALUES (\"" + fromUser + "\",\"" + toUser + "\",\"" + timeStamp + "\",\"" + message + "\");");
+			stmt.executeUpdate("INSERT INTO friendRequests VALUES (\"" + fromUser + "\",\"" + toUser + "\",\"" + message + "\",\"false\");");
 		} catch (SQLException e) {
 			returnStatus = ("(" + timeStamp + ") An DB error occurred: " + e.toString() );
 			e.printStackTrace();
@@ -155,7 +194,6 @@ public class UserDataManager {
 		}
 		
 		/* Should not reach here. */
-		assert false;
 		return false;
 	}
 	
@@ -165,7 +203,7 @@ public class UserDataManager {
 		String returnStatus = "(" + timeStamp + ") Your challenge has been sent.";
 		
 		try {
-			stmt.executeUpdate("INSERT INTO challenges VALUES (\"" + fromUser + "\",\"" + toUser + "\",\"" + quizNumber + "\");");
+			stmt.executeUpdate("INSERT INTO challenges VALUES (\"" + fromUser + "\",\"" + toUser + "\",\"" + quizNumber + "\",\"false\");");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			returnStatus = ("(" + timeStamp + ") An DB error occurred: " + e.toString() );
@@ -173,6 +211,29 @@ public class UserDataManager {
 		}
 		
 		return returnStatus;
+	}
+	
+	public int getUserNumNewChallenges(String username) {
+		int num = -1;	
+
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM challenges WHERE toUser = \"" + username + "\" AND viewed=\"false\";");
+			rs.next();
+			num = rs.getInt(1);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return num;
+	}
+	
+	public void markUserAllChallengesViewed(String username) {
+		try {
+			stmt.executeUpdate("UPDATE challenges SET viewed = \"true\" WHERE toUser = \"" + username + "\" AND viewed = \"false\";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public List<Challenge> getUserChallengeStrings (String username) {
@@ -239,7 +300,6 @@ public class UserDataManager {
 			e.printStackTrace();
 		}
 		
-		assert rs != null;
 		return rs;
 	}
 	
@@ -287,7 +347,6 @@ public class UserDataManager {
 		}
 		
 		/* Should not reach here. */
-		assert false;
 		return false;
 	}
 
@@ -374,8 +433,6 @@ public class UserDataManager {
 						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Practice Makes Perfect\");");
 					}
 					break;
-				default:
-					assert false;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -435,7 +492,6 @@ public class UserDataManager {
 			e.printStackTrace();
 		}
 		
-		assert bestScore != -1;
 		return bestScore;
 	}
 	

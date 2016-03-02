@@ -13,8 +13,10 @@
 	<%
 		
 		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
+		userDataManager.markUserAllFriendRequestsViewed(username);	
+		
 		ResultSet rs = userDataManager.getUserFriendRequests(username);
-			
+	
 		out.println("<h2>Your Friend Request</h2>");
 		/* Check if there is any message. */
 		if (!rs.isBeforeFirst()) { /* Have no friend requests. */  

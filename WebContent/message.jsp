@@ -13,8 +13,9 @@
 	<%
 		
 		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
-		ResultSet rs = userDataManager.getUserMessages(username);
+		userDataManager.markUserAllMessagesViewed(username);
 		
+		ResultSet rs = userDataManager.getUserMessages(username);
 		
 		out.println("<h2>Your Message</h2>");
 		/* Check if there is any message. */

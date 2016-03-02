@@ -254,14 +254,11 @@ public class QuizManager {
 		}
 		
 		/* Should not reach here. */
-		assert false;
 		return false;
 	}
 	
 	private void removeQuestion(int questionNumber) {
 		try {
-			//TODO: Akanksha, Please filling your code here to remove corresponding answers
-			// in answerOptions, answers, matchingOptions, numSlots
 			
 			stmt.executeUpdate("DELETE FROM answers WHERE questionId = " + questionNumber + ";");
 			stmt.executeUpdate("DELETE FROM answerOptions WHERE questionId = " + questionNumber + ";");
@@ -355,6 +352,45 @@ public class QuizManager {
 		}
 		
 		return num;
+	}
+	
+	public ResultSet getPopularQuizzes(int numRecords) {
+		ResultSet rs = null;
+		
+		try {
+			rs = stmt.executeQuery("SELECT quizId, title, COUNT(quizId) FROM quizRecords NATURAL JOIN quizzes GROUP BY quizId ORDER BY COUNT(quizId) DESC LIMIT " + numRecords + ";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return rs;
+	}
+	
+	public ResultSet getRecentlyCreatedQuizzes(int numRecords) {
+		ResultSet rs = null;
+		
+		try {
+			rs = stmt.executeQuery("SELECT quizId, dateCreated, title FROM quizzes ORDER BY dateCreated DESC LIMIT " + numRecords + ";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
+	
+	public ResultSet getUserRecentActivities(String username, int numRecords) {
+		ResultSet rs = null;
+		
+		try {
+			rs = stmt.executeQuery("SELECT * FROM quizzes NATURAL JOIN quizRecords WHERE username = \"" + username + "\" LIMIT " + numRecords + ";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
 	}
 
 }
