@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="web.*" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <style>
@@ -177,5 +178,18 @@
 		}
 	}
 %>
+
+<h3>Your Friends' Recent Activities </h3>
+<%
+	List<String> friendActivities = userDataManager.getUserFriendsRecentActivities(username, 10);
+	out.println("<table style=\"border:20px\">");
+	for (String activity : friendActivities) {
+		out.println("<tr><td>" + activity + "</td><tr>");
+	}
+	out.println("</table>");
+%>
+	
+	
+	
 </body>
 </html>

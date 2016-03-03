@@ -6,6 +6,7 @@ import web.ClockTimeStamp;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -550,7 +551,7 @@ public class UserDataManager {
 		return returnStatus;
 	}
 	
-	public class FriendActivity {
+	public class FriendActivity implements Comparable<FriendActivity>{
 		private String time;
 		private String HTMLActivity;
 		
@@ -574,25 +575,67 @@ public class UserDataManager {
 		public void setHTMLActivvity(String HTMLActivity) {
 			this.HTMLActivity = HTMLActivity;
 		}
+
+		@Override
+		public int compareTo(FriendActivity other) {
+			return other.getTimeStamp().compareTo(this.getTimeStamp());
+		}
+		
+		
 	}
-	public List<FriendActivity> getUserFriendsRecentActivities(String username, int num) {
+	public List<String> getUserFriendsRecentActivities(String username, int num) {
 		ResultSet rs = null;
 		List<FriendActivity> friendActivities = new LinkedList<FriendActivity>();
 		
 		try {
-			rs = stmt.executeQuery("SELECT * FROM achievements WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") ORDER BY time DESC LIMIT " + num + ";");
-			while(rs.next()) {
+			System.out.println("SELECT * FROM achievements WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			System.out.println("SELECT * FROM quizzes WHERE creatorUsername IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			System.out.println("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			rs = stmt.executeQuery("SELECT * FROM achievements WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			while (rs.next()) {
 				String timeStamp = rs.getString("time");
+				String friendName = rs.getString("username");
+				String html = "<a href=\"userpage.jsp?username=" + friendName + "\">" + friendName + "</a> acquired achievement \"" + rs.getString("achievement") + "\"";
+				FriendActivity fa = new FriendActivity(timeStamp, html);
+				friendActivities.add(fa);
 			}
+			/*
+			rs = stmt.executeQuery("SELECT * FROM quizzes WHERE creatorUsername IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			while (rs.next()) {
+				String timeStamp = rs.getString("time");
+				String friendName = rs.getString("username");
+				String html = "<a href=\"userpage.jsp?username=" + friendName + "\">" + friendName + " created quiz <a href=\"viewquiz.jsp?id=" + rs.getString("quizId") + "\">" + rs.getString("title") + "</a>"; 
+				FriendActivity fa = new FriendActivity(timeStamp, html);
+				friendActivities.add(fa);
+			}	
+			*/		
+			rs = stmt.executeQuery("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			while (rs.next()) {
+				String timeStamp = rs.getString("time");
+				String friendName = rs.getString("username");
+				String html = "<a href=\"userpage.jsp?username=" + friendName + "\">" + friendName + "</a> played quiz <a href=\"viewquiz.jsp?id=" + rs.getString("quizId") + "\">" + rs.getString("title") + "</a> and got " + rs.getString("score") + " point(s)";
+				FriendActivity fa = new FriendActivity(timeStamp, html);
+				friendActivities.add(fa);
 			
-			stmt.executeQuery("SELECT * FROM quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") ORDER BY time DESC LIMIT " + num + ";");
-			stmt.executeQuery("SELECT * FROM quizRecords WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") ORDER BY time DESC LIMIT " + num + ";");
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
 		
+		Collections.sort(friendActivities);
+		
+		if (friendActivities.size() > num) {
+			friendActivities.subList(num, friendActivities.size()).clear();
+		}
+		
+		
+		List<String> result = new LinkedList<String>();
+		for (FriendActivity fa : friendActivities) {
+			result.add(fa.getTimeStamp() + " " + fa.getHTMLActivity());
+		}
+
+		return result;		
 	}
 	
 
