@@ -599,21 +599,21 @@ public class UserDataManager {
 				FriendActivity fa = new FriendActivity(timeStamp, html);
 				friendActivities.add(fa);
 			}
-			/*
+			
 			rs = stmt.executeQuery("SELECT * FROM quizzes WHERE creatorUsername IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
 			while (rs.next()) {
-				String timeStamp = rs.getString("time");
-				String friendName = rs.getString("username");
-				String html = "<a href=\"userpage.jsp?username=" + friendName + "\">" + friendName + " created quiz <a href=\"viewquiz.jsp?id=" + rs.getString("quizId") + "\">" + rs.getString("title") + "</a>"; 
+				String timeStamp = rs.getString("dateCreated");
+				String friendName = rs.getString("creatorUsername");
+				String html = "<a href=\"userpage.jsp?username=" + friendName + "\">" + friendName + "</a> created quiz <a href=\"QuizPage.jsp?id=" + rs.getString("quizId") + "\">" + rs.getString("title") + "</a>"; 
 				FriendActivity fa = new FriendActivity(timeStamp, html);
 				friendActivities.add(fa);
 			}	
-			*/		
+			
 			rs = stmt.executeQuery("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
 			while (rs.next()) {
 				String timeStamp = rs.getString("time");
 				String friendName = rs.getString("username");
-				String html = "<a href=\"userpage.jsp?username=" + friendName + "\">" + friendName + "</a> played quiz <a href=\"viewquiz.jsp?id=" + rs.getString("quizId") + "\">" + rs.getString("title") + "</a> and got " + rs.getString("score") + " point(s)";
+				String html = "<a href=\"userpage.jsp?username=" + friendName + "\">" + friendName + "</a> played quiz <a href=\"QuizPage.jsp?id=" + rs.getString("quizId") + "\">" + rs.getString("title") + "</a> and got " + rs.getString("score") + " point(s)";
 				FriendActivity fa = new FriendActivity(timeStamp, html);
 				friendActivities.add(fa);
 			
