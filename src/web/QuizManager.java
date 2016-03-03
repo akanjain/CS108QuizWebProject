@@ -393,4 +393,29 @@ public class QuizManager {
 		return rs;
 	}
 
+	public synchronized void addRatingReview(int quizNumber, String username, int userRating, String reviewText) {
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM ratingNreviews");
+			rs.last();
+			int keyNumber = rs.getRow() + 1;
+			String qry = "INSERT INTO ratingNreviews VALUES (" + keyNumber + ", " + quizNumber + ", \"" + username + "\", " + userRating + ", \"" + reviewText + "\")";
+			System.out.println(qry);
+			stmt.executeUpdate(qry);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public ResultSet getQuizRatingReview(int quizNumber) {
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM ratingNreviews WHERE quizId = " + quizNumber);
+			return rs;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 }

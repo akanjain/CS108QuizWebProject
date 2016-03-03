@@ -16,6 +16,7 @@
 <h3>Your score: <%= (Integer) request.getAttribute("Score") %> out of <%= currentQuiz.getTotalMaxScore() %></h3>
 <h3>Time taken to complete Quiz: <%= request.getAttribute("elapsedTime") %></h3>
 <p>Go to <a href="reviewquiz.jsp">Review Quiz</a></p>
+<p>Go to <a href="ratequiz.jsp">Rate Quiz</a></p>
 <p>Go to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>
