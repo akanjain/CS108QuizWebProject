@@ -384,6 +384,7 @@ public class UserDataManager {
 	
 	// TODO: tests this function. 
 	public void updateUserAchievements (Achievements ach, String username, int quizId, int score) {
+		String timeStamp = ClockTimeStamp.getTimeStamp();
 		ResultSet rs;
 		
 		try {
@@ -393,11 +394,11 @@ public class UserDataManager {
 					rs.next();
 					int numCreated = rs.getInt(1);
 					if (numCreated == 1) { 
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Amateur Author\");");
+						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Amateur Author\",\"" + timeStamp + "\");");
 					} else if (numCreated == 5) {
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prolific Author\");");
+						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prolific Author\",\"" + timeStamp + "\");");
 					} else if (numCreated == 10) {
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prodigious Author\");");
+						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prodigious Author\",\"" + timeStamp + "\");");
 					}				
 					break;					
 				case TAKE_QUIZ:
@@ -407,7 +408,7 @@ public class UserDataManager {
 					rs.next();
 					int numPlayed = rs.getInt(1);
 					if (numPlayed == 10) {
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Quiz Machine\");");
+						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Quiz Machine\",\"" + timeStamp + "\");");
 					}			
 
 					/* Check if user get the highest score. */
@@ -416,12 +417,12 @@ public class UserDataManager {
 					if (!rs.isBeforeFirst()) {
 						rs = stmt.executeQuery("SELECT score FROM quizRecords WHERE quizId = \"" + quizId + "\" ORDER BY score DESC LIMIT 1;");
 						if (!rs.isBeforeFirst()) {
-							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"I am the Greatest\");");
+							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"I am the Greatest\",\"" + timeStamp + "\");");
 						} else {
 							rs.next();
 							int maxScore = rs.getInt(1);
 							if (score == maxScore) {
-								stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"I am the Greatest\");");
+								stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"I am the Greatest\",\"" + timeStamp + "\");");
 							}
 						}
 						
@@ -430,7 +431,7 @@ public class UserDataManager {
 				case PRACTICE_MODE:
 					rs = stmt.executeQuery("SELECT * FROM achievements WHERE username = \"" + username + "\" AND achievements = \"Practice Makes Perfect\";");
 					if (!rs.isBeforeFirst()) {
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Practice Makes Perfect\");");
+						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Practice Makes Perfect\",\"" + timeStamp + "\");");
 					}
 					break;
 			}
@@ -547,6 +548,51 @@ public class UserDataManager {
 			e.printStackTrace();
 		}
 		return returnStatus;
+	}
+	
+	public class FriendActivity {
+		private String time;
+		private String HTMLActivity;
+		
+		public FriendActivity (String time, String HTMLActivity) {
+			this.time = time;
+			this.HTMLActivity = HTMLActivity;
+		}
+		
+		public String getTimeStamp() {
+			return time;
+		}
+		
+		public void setTimeStamp(String time) {
+			this.time = time;
+		}
+		
+		public String getHTMLActivity() {
+			return HTMLActivity;
+		}
+		
+		public void setHTMLActivvity(String HTMLActivity) {
+			this.HTMLActivity = HTMLActivity;
+		}
+	}
+	public List<FriendActivity> getUserFriendsRecentActivities(String username, int num) {
+		ResultSet rs = null;
+		List<FriendActivity> friendActivities = new LinkedList<FriendActivity>();
+		
+		try {
+			rs = stmt.executeQuery("SELECT * FROM achievements WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") ORDER BY time DESC LIMIT " + num + ";");
+			while(rs.next()) {
+				String timeStamp = rs.getString("time");
+			}
+			
+			stmt.executeQuery("SELECT * FROM quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") ORDER BY time DESC LIMIT " + num + ";");
+			stmt.executeQuery("SELECT * FROM quizRecords WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") ORDER BY time DESC LIMIT " + num + ";");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
 	}
 	
 

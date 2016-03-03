@@ -79,7 +79,7 @@
 		out.println("<table id=\"cssTable\" style=\"border:20px\">");
 		out.println("<tr><td align=\"center\">Created Time</td><td align=\"center\">ID</td><td>Title</td>");
 		while (rs.next()) {
-			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"left\">" + rs.getString("quizId") + "</td><td = align=\"center\">" + rs.getString("title") + "</td>");
+			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"left\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
 		}
 		out.println("</table>");
 	}
@@ -100,7 +100,7 @@
 		out.println("<table id=\"cssTable\" align style=\"border:20px\">");
 		out.println("<tr><td>Time</td><td>ID</td><td>Title</td><td>Score</td><td>Duration</td>");
 		while(rs.next()) {
-			out.println("<tr><td>" + rs.getString("time") +  "</td><td>" + rs.getString("quizId") + "</td><td>" + rs.getString("title") + "</td><td>" + rs.getString("score") + "</td><td>" + rs.getString("duration") + "</td><td>");
+			out.println("<tr><td>" + rs.getString("time") +  "</td><td>" + rs.getString("quizId") + "</td><td><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td><td>" + rs.getString("score") + "</td><td>" + rs.getString("duration") + "</td><td>");
 		}
 		out.println("</table>");
 	}

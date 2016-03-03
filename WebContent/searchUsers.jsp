@@ -47,11 +47,11 @@
 			
 			for (String username : userList) {
 				if (username.equals(currUserName)) {
-					out.println("<p>" + username + "  This is you.</p>");
+					out.println("<p><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a> This is you.</p>");
 				} else if (userDataManager.areFriends(currUserName, username)) {
-					out.println("<p>" + username + "  Already your friend.</p>");
+					out.println("<p><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a>  Already your friend.</p>");
 				} else {
-					out.println("<p>" + username + "  <input type=\"checkbox\" name=\"" + username + "\"></p>");
+					out.println("<p><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a>  <input type=\"checkbox\" name=\"" + username + "\"></p>");
 				}
 			}
 			

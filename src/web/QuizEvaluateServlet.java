@@ -78,6 +78,7 @@ public class QuizEvaluateServlet extends HttpServlet {
 		quizManager.addUserQuizRecord(username, quizId, (int) totalTime , score);
 				
 		/* Update achievements. */
+
 		userDataManager.updateUserAchievements(Achievements.TAKE_QUIZ, username, quizId, score);
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("QuizPlayResult.jsp");
