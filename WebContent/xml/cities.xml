@@ -46,7 +46,7 @@
   <image-location>http://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Stanford_University_campus_from_above.jpg/800px-Stanford_University_campus_from_above.jpg</image-location>
   <answer-list>
     <answer preferred="preferred">Stanford</answer>
-	<answer>Stanford, California</answer>
+	  <answer>Stanford, California</answer>
   </answer-list>
 </question>
 
