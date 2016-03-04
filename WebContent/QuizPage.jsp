@@ -7,21 +7,74 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Quiz Summary Page</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="http://tablesorter.com/__jquery.tablesorter.min.js"></script>
+<script>
+$(document).ready(function(){
+	{ 
+        $("#myTable").tablesorter( {sortList: [[0,1]]} ); 
+    } 
+});
+</script>
+<style type="text/css">
+table.tablesorter {
+	font-family:arial;
+	background-color: #CDCDCD;
+	margin:10px 0pt 15px;
+	font-size: 8pt;
+	width: 50%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #e6EEEE;
+	border: 1px solid #FFF;
+	font-size: 8pt;
+	padding: 4px;
+}
+table.tablesorter thead tr .header {
+	background-image: url(img/bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 4px;
+	background-color: #FFF;
+	vertical-align: top;
+}
+table.tablesorter tbody tr.odd td {
+	background-color:#F0F0F6;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(img/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(img/desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}  
+</style>
 </head>
 <body>
-<h1>Quiz Description (Quiz number, Quiz subject, Other description)</h1>
 <%
 	String idName = request.getParameter("id");
 	request.getSession().setAttribute("QuizId", idName);
-%>
-<p>Quiz id = <%= idName %></p>
-<%
 	QuizManager QzManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
 	ResultSet rs = QzManager.getQuiz(Integer.parseInt(idName));
 	String creatorName = null;
 	if (rs.next()) {
 		creatorName = rs.getString("creatorUsername");
 	}
+	String username = (String) request.getSession().getAttribute("username");
+%>
+	<h1>Welcome to Quiz Page.</h1>
+	<h3><u>Quiz Title:</u> <%= rs.getString("title") %></h3>
+	<h3><u>Quiz Description:</u> <%= rs.getString("description") %></h3>
+	<h3><u>Quiz Category:</u> <%= rs.getString("category") %></h3>
+	<h3><b>Quiz Created by</b> <a href="userpage.jsp?username=<%= creatorName %>"><%= creatorName %></a></h3>
+<%
 	rs = QzManager.getQuizRatingReview(Integer.parseInt(idName));
 	int totalRating = 0;
 	int totalReviews = 0;
@@ -35,7 +88,7 @@
 		calculated = (((double) totalRating)/totalReviews)/5*100;
 	}
 %>
-Quiz Rating:<br>
+<h3><u>Quiz Rating:</u></h3>
 <%
 	if (totalReviews == 0) {
 %>
@@ -49,23 +102,47 @@ Quiz Rating:<br>
 <%
 	}
 %>
-<br>
-<p>Read <a href="readreview.jsp?id=<%= idName %>">Reviews</a></p>
-<p>Quiz Creator: <a href="\creator.jsp"><%= creatorName %>, url of creator(pulled from database)</a></p>
+<p><b>Read</b> <a href="readreview.jsp?id=<%= idName %>"><b>Reviews</b></a></p>
 <%
 	String currentUser = (String) request.getSession().getAttribute("username");
 	if (currentUser.equals(creatorName)) {
 %>
-<p><a href="viewquiz.jsp?id=<%= idName %>" >View Quiz</a></p>
+<p><a href="viewquiz.jsp?id=<%= idName %>" ><b>View Created Quiz</b></a></p>
 <%
 	}
 %>
-<p>List of user's past performance</p>
-<ul>
-<li>performance1</li>
-<li>performance2</li>
-<li>performance3</li>
-</ul>
+<h3><u><%= username %>'s past performance (Click on table column names to sort by that column):</u></h3>
+<%	
+	ResultSet perfrs = QzManager.getUserQuizPerformance(username, Integer.parseInt(idName), 5);
+	if (!perfrs.isBeforeFirst()) {
+		out.println("<p>There is no record of quiz taken by you in the system.</p>");
+	} else {
+%>
+<table id="myTable" class="tablesorter"> 
+<thead> 
+<tr> 
+    <th align="center">Quiz Taken Date</th> 
+    <th align="center">Score</th> 
+    <th align="center">Time Taken</th> 
+</tr> 
+</thead> 
+<tbody> 
+<%
+		while (perfrs.next()) {
+%>
+<tr> 
+    <td align="center"><%= perfrs.getString("time") %></td> 
+    <td align="center"><%= perfrs.getString("score") %></td> 
+    <td align="center"><%= perfrs.getString("duration") %></td> 
+</tr> 
+<%
+		}
+%>
+</tbody> 
+</table>
+<%
+	}
+%> 
 <p>List of highest performers</p>
 <ul>
 <li>performer1</li>
@@ -85,5 +162,6 @@ Quiz Rating:<br>
 <input name="quizMode" type="hidden" value="practice"/>
 <input type="submit" value="Start Taking Quiz in Practice Mode" /></p>
 </form>
+<p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>

@@ -36,5 +36,7 @@
 <%
 	}
 %>
+<p>Go back to <a href="QuizPage.jsp?id=<%= idName %>">Quiz Page</a></p>
+<p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>
