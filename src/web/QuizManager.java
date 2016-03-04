@@ -392,6 +392,21 @@ public class QuizManager {
 		
 		return rs;
 	}
+	
+	public ResultSet getUserQuizPerformance(String username, int quizId, int numRecords) {
+		ResultSet rs = null;
+		
+		try {
+			String qry = "SELECT time, duration, score FROM quizRecords WHERE username = \"" + username + "\" AND quizId = " + quizId + " ORDER BY time DESC LIMIT " + numRecords + ";";
+			System.out.println("qry = " + qry);
+			rs = stmt.executeQuery(qry);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
 
 	public synchronized void addRatingReview(int quizNumber, String username, int userRating, String reviewText) {
 		try {
