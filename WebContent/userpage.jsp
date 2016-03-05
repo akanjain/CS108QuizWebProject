@@ -71,6 +71,19 @@
 	}
 %>
 
+<h3>To add this user as your friend, please enter your message and click "Add To Friends".</h3>
+<form action="UserpageServlet" method="post">
+<input type="text" name="message">
+<input type="submit" value="Add To Friends">
+<input type="hidden" name="toUser" value="<%= username %>">
+</form>
+<%
+		String returnStatus = (String) request.getAttribute("Return Status");
+		if ( returnStatus != null) {
+			out.println(returnStatus);
+		}
+%>
+
 <p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>
