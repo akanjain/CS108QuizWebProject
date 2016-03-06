@@ -27,17 +27,18 @@ public class XMLParser {
 	private static String quizTitle;
 	private static String quizDescription;
 	private static String quizCategory;
-	private static String dateCreated;
+	//private static String dateCreated;
 	private static boolean isRandom;
 	private static boolean isOnePage;
 	private static boolean isImmediate;
 	private static boolean isPracticeMode;
 	private static int numQuestions;
 	
-	private static Map<String, String> questions; //(query, type)
-	private static Map<String, List<String>> answerOptions; //(query, answer options)
-	private static Map<String, List<String>> answersCorrect; //(query, correct answers)
-	
+	private static List<String> questions; //query
+	private static List<String> qTypes; //type
+	private static Map<Integer, List<String>> answerOptions; // (question index, answer options)
+	private static Map<Integer, List<String>> answersCorrect; // (question index, correct answers)
+	private static Map<Integer, Integer> corrAnswerSlots; // (question index, correct answer slots)
 	
 	public XMLParser(String fileName) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -46,10 +47,12 @@ public class XMLParser {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(fXmlFile);
 			
-			dateCreated = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-			questions = new HashMap<String, String>();
-			answerOptions =  new HashMap<String, List<String>>();
-			answersCorrect = new HashMap<String, List<String>>();
+			//dateCreated = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+			questions = new ArrayList<String>();
+			qTypes = new ArrayList<String>();
+			answerOptions =  new HashMap<Integer, List<String>>();
+			answersCorrect = new HashMap<Integer, List<String>>();
+			corrAnswerSlots = new HashMap<Integer, Integer>();
 			
 			NodeList elemList = document.getChildNodes();
 			numQuestions = 0; 
@@ -59,7 +62,10 @@ public class XMLParser {
 					Element element= (Element) node;
 					String tagName = element.getTagName();
 					//question
-					if(tagName == "question") parseQuestion(element);
+					if(tagName == "question") {
+						parseQuestion(element);
+						numQuestions++;
+					}
 					else if (tagName == "quiz") {
 						isRandom = Boolean.parseBoolean(element.getAttribute("random"));
 						isOnePage = Boolean.parseBoolean(element.getAttribute("one-page"));
@@ -80,12 +86,13 @@ public class XMLParser {
 		}	
 	}
 
-	
+
 	private static void parseQuestion(Element element) {
-		numQuestions++;
+		//index of current question
+		int index = qTypes.size();
 		
 		String qType = element.getAttribute("type");
-		String query = "";
+		qTypes.add(qType);
 		
 		NodeList children = element.getChildNodes();
 		for(int i = 0; i < children.getLength(); i++) {
@@ -93,88 +100,92 @@ public class XMLParser {
 			if(child.getNodeType() == Node.ELEMENT_NODE) {
 				Element elem = (Element) child;
 				String tag = elem.getTagName(); 
+				
 				//query part
 				if(tag == "query" || tag == "image-location") {
-					questions.put(elem.getTextContent(), qType);
-					query = elem.getTextContent();
+					questions.add(elem.getTextContent());
 					continue;
 				}
 				else if(tag == "blank-query") {
-					String qText = "";
+					String query = "";
 					NodeList parts = element.getChildNodes();
 					for(int j = 0; j < parts.getLength(); j++) {
 						Node n = parts.item(j);
 						if(n.getNodeType() == Node.ELEMENT_NODE) {
 							Element part = (Element) n;
-							if (part.getTagName() == "blank") qText += "_____";
-							else qText += part.getTextContent();
+							if (part.getTagName() == "blank") query += "_____";
+							else query += part.getTextContent();
 						}
 					}
-					questions.put(qText, qType);
-					query = elem.getTextContent();
+					questions.add(query);
 					continue;
 				}
+				
 				//answer part
-				if(qType.contains("multiple")) {
+				if(qType.equals("multiple-choice") || qType.equals("multiple-choice-multiple-answer")) {
 					//options
 					if(tag == "option") {
-						List<String> correctAnswers;
+						//only put in correct answers
 						if(elem.getAttribute("answer") == "answer") {
-							if(answersCorrect.containsKey(query)) {
-								correctAnswers = answersCorrect.get(query);
+							List<String> correctAnswers;
+							if(answersCorrect.containsKey(index)) {
+								correctAnswers = answersCorrect.get(index);
 							} else {
 								correctAnswers = new ArrayList<String>();
 							}
 							correctAnswers.add(elem.getTextContent());
-							answersCorrect.put(query, correctAnswers);
+							answersCorrect.put(index, correctAnswers);
 						}
+						//put all options(including the correct answers above)
 						List<String> options;
-						if(answerOptions.containsKey(query)) {
-							options = answerOptions.get(query);
+						if(answerOptions.containsKey(index)) {
+							options = answerOptions.get(index);
 						} else {
 							options = new ArrayList<String>();
 						}
 						options.add(elem.getTextContent());
-						answerOptions.put(query, options);
+						answerOptions.put(index, options);
 					}
+				} if (qType.equals("matching")) {
+					//TODO: put each option into answerOptions and answers into slots 
+					
 				} else {
 					if(tag == "answer") {
-						//when there is a single answer, only save the answer in the anwerCorrect map
-						List<String> correctAnswer = new ArrayList<String>();
-						correctAnswer.add(elem.getTextContent());
-						answersCorrect.put(query, correctAnswer);
+						//there can be multiple correct answers
+						List<String> correctAnswers;
+						if(answersCorrect.containsKey(index)) {
+							correctAnswers = answersCorrect.get(index);
+						} else {
+							correctAnswers = new ArrayList<String>();
+						}
+						correctAnswers.add(elem.getTextContent());
+						answersCorrect.put(index, correctAnswers);
 						//picture response answer
 					} else if (tag == "answer-list") {
-						NodeList options = element.getChildNodes();
-						for(int j = 0; j < options.getLength(); j++) {
-							Node n = options.item(j);
+						//there can be multiple correct answers
+						List<String> correctAnswers;
+						NodeList answer_list = element.getElementsByTagName("answer");
+						for(int j = 0; j < answer_list.getLength(); j++) {
+							Node n = answer_list.item(j);
 							if(n.getNodeType() == Node.ELEMENT_NODE) {
 								Element answer = (Element) n;
-								if (answer.getTagName() == "answer") {
-									if(answer.getAttribute("preferred") == "preferred") {
-										List<String> correctAnswer = new ArrayList<String>();
-										correctAnswer.add(elem.getTextContent());
-										answersCorrect.put(query, correctAnswer);
-									}
-									
-									List<String> answerList;
-									if(answerOptions.containsKey(query)) {
-										answerList = answerOptions.get(query);
-									} else {
-										answerList = new ArrayList<String>();
-									}
-									answerList.add(elem.getTextContent());
-									answerOptions.put(query, answerList);
+								if(answersCorrect.containsKey(index)) {
+									correctAnswers = answersCorrect.get(index);
+								} else {
+									correctAnswers = new ArrayList<String>();
 								}
+								correctAnswers.add(answer.getTextContent());
+								answersCorrect.put(index, correctAnswers);
 							}
 						}
 						
+						if (qType.equals("multiple-answer-unordered")) {
+							corrAnswerSlots.put(index, answer_list.getLength());
+						}
 					}
 				}
-				
 			}
 		}
-		
 	}
 	
 	//public methods to access quiz information
@@ -187,9 +198,9 @@ public class XMLParser {
 	public String getQuizCategory() {
 		return quizCategory;
 	}
-	public String getDateCreated() {
+	/*public String getDateCreated() {
 		return dateCreated;
-	}
+	}*/
 	
 	public boolean isRandom() {
 		return isRandom;
@@ -207,14 +218,20 @@ public class XMLParser {
 		return numQuestions;
 	}
 	
-	public Map<String, String> getQuestions() {
+	public List<String> getQuestions() {
 		return questions;
 	}
-	public Map<String, List<String>> getAnswerOptions() {
+	public List<String> getQuestionTypes() {
+		return qTypes;
+	}
+	public Map<Integer, List<String>> getAnswerOptions() {
 		return answerOptions;
 	}
-	public Map<String, List<String>> getCorrectAnswers() {
+	public Map<Integer, List<String>> getCorrectAnswers() {
 		return answersCorrect;
+	}
+	public int getNumSlots(int index) {
+		return corrAnswerSlots.get(index);
 	}
 	
 	public static void main(String[] args) {
