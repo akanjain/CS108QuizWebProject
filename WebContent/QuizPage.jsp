@@ -143,12 +143,108 @@ background-color: #8dbdd8;
 <%
 	}
 %> 
-<p>List of highest performers</p>
-<ul>
-<li>performer1</li>
-<li>performer2</li>
-<li>performer3</li>
-</ul>
+<h3><u>List of highest performers:</u></h3>
+<%	
+	ResultSet highestperfrs = QzManager.getHighestPerformers(Integer.parseInt(idName), 20);
+	if (!highestperfrs.isBeforeFirst()) {
+		out.println("<p>No user has played this quiz before.</p>");
+	} else {
+%>
+<table id="highestPerfTable"> 
+<thead> 
+<tr> 
+    <th align="center">User</th> 
+    <th align="center">Date Quiz Taken</th>
+    <th align="center">Score</th> 
+    <th align="center">Time Taken</th> 
+</tr> 
+</thead> 
+<tbody> 
+<%
+		while (highestperfrs.next()) {
+%>
+<tr>
+	<td align="center"><%= highestperfrs.getString("username") %></td> 
+    <td align="center"><%= highestperfrs.getString("time") %></td> 
+    <td align="center"><%= highestperfrs.getString("score") %></td> 
+    <td align="center"><%= highestperfrs.getString("duration") %></td> 
+</tr> 
+<%
+		}
+%>
+</tbody> 
+</table>
+<%
+	}
+%> 
+<h3><u>List of recent top performers:</u></h3>
+<%	
+	ResultSet currenthighestperfrs = QzManager.getHighestPerformers(Integer.parseInt(idName), 5*24*60, 5);
+	if (!currenthighestperfrs.isBeforeFirst()) {
+		out.println("<p>No user has played this quiz recently.</p>");
+	} else {
+%>
+<table id="currentHighestPerfTable"> 
+<thead> 
+<tr> 
+    <th align="center">User</th> 
+    <th align="center">Date Quiz Taken</th>
+    <th align="center">Score</th> 
+    <th align="center">Time Taken</th> 
+</tr> 
+</thead> 
+<tbody> 
+<%
+		while (currenthighestperfrs.next()) {
+%>
+<tr>
+	<td align="center"><%= currenthighestperfrs.getString("username") %></td> 
+    <td align="center"><%= currenthighestperfrs.getString("time") %></td> 
+    <td align="center"><%= currenthighestperfrs.getString("score") %></td> 
+    <td align="center"><%= currenthighestperfrs.getString("duration") %></td> 
+</tr> 
+<%
+		}
+%>
+</tbody> 
+</table>
+<%
+	}
+%> 
+<h3><u>List of recent quiz takers and their score:</u></h3>
+<%	
+	ResultSet currentperfrs = QzManager.getPerformers(Integer.parseInt(idName), 5*24*60, 20);
+	if (!currentperfrs.isBeforeFirst()) {
+		out.println("<p>No user has played this quiz recently.</p>");
+	} else {
+%>
+<table id="currentPerfTable"> 
+<thead> 
+<tr> 
+    <th align="center">User</th> 
+    <th align="center">Date Quiz Taken</th>
+    <th align="center">Score</th> 
+    <th align="center">Time Taken</th> 
+</tr> 
+</thead> 
+<tbody> 
+<%
+		while (currentperfrs.next()) {
+%>
+<tr>
+	<td align="center"><%= currentperfrs.getString("username") %></td> 
+    <td align="center"><%= currentperfrs.getString("time") %></td> 
+    <td align="center"><%= currentperfrs.getString("score") %></td> 
+    <td align="center"><%= currentperfrs.getString("duration") %></td> 
+</tr> 
+<%
+		}
+%>
+</tbody> 
+</table>
+<%
+	}
+%> 
 <p>print summary statistics</p>
 <form action="QuizPlayServlet" method="post">
 <p>

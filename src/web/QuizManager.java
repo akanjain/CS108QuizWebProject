@@ -407,7 +407,52 @@ public class QuizManager {
 		
 		return rs;
 	}
+	
+	public ResultSet getHighestPerformers(int quizId, int numRecords) {
+		ResultSet rs = null;
+		
+		try {
+			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + " ORDER BY score DESC, duration LIMIT " + numRecords + ";";
+			System.out.println("qry = " + qry);
+			rs = stmt.executeQuery(qry);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
 
+	public ResultSet getHighestPerformers(int quizId, int minutes, int numRecords) {
+		ResultSet rs = null;
+		String referenceTime = ClockTimeStamp.getTimeStampMinusMin(minutes);
+		try {
+			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + " AND time >= \"" + referenceTime + "\" ORDER BY score DESC, duration LIMIT " + numRecords + ";";
+			System.out.println("qry = " + qry);
+			rs = stmt.executeQuery(qry);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
+	
+	public ResultSet getPerformers(int quizId, int minutes, int numRecords) {
+		ResultSet rs = null;
+		String referenceTime = ClockTimeStamp.getTimeStampMinusMin(minutes);
+		try {
+			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + " AND time >= \"" + referenceTime + "\" ORDER BY time DESC LIMIT " + numRecords + ";";
+			System.out.println("qry = " + qry);
+			rs = stmt.executeQuery(qry);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
+	
 	public synchronized void addRatingReview(int quizNumber, String username, int userRating, String reviewText) {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM ratingNreviews");
