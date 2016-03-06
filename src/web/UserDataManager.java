@@ -512,6 +512,10 @@ public class UserDataManager {
 		return num;
 	}
 	
+	public boolean isUserAccountValid(String username) {
+		return accountManager.accountExist(username);
+	}
+	
 	public String removeUser(String username) {
 		String returnStatus = "The user has been successfully removed";
 		

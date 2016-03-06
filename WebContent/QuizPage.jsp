@@ -62,6 +62,7 @@ background-color: #8dbdd8;
 	String idName = request.getParameter("id");
 	request.getSession().setAttribute("QuizId", idName);
 	QuizManager QzManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
+	UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
 	ResultSet rs = QzManager.getQuiz(Integer.parseInt(idName));
 	String creatorName = null;
 	if (rs.next()) {
@@ -70,11 +71,20 @@ background-color: #8dbdd8;
 	String username = (String) request.getSession().getAttribute("username");
 %>
 	<h1>Welcome to Quiz Page.</h1>
+	<h3><u>Quiz ID:</u> <%= idName %></h3>
 	<h3><u>Quiz Title:</u> <%= rs.getString("title") %></h3>
 	<h3><u>Quiz Description:</u> <%= rs.getString("description") %></h3>
 	<h3><u>Quiz Category:</u> <%= rs.getString("category") %></h3>
+<%
+	if (userDataManager.isUserAccountValid(creatorName)) {
+%>
 	<h3><b>Quiz Created by</b> <a href="userpage.jsp?username=<%= creatorName %>"><%= creatorName %></a></h3>
 <%
+	} else {
+%>
+	<h3><b>Quiz Created by</b> <%= creatorName %></h3>		
+<%		
+	}
 	rs = QzManager.getQuizRatingReview(Integer.parseInt(idName));
 	int totalRating = 0;
 	int totalReviews = 0;
@@ -164,7 +174,7 @@ background-color: #8dbdd8;
 		while (highestperfrs.next()) {
 %>
 <tr>
-	<td align="center"><%= highestperfrs.getString("username") %></td> 
+	<td align="center"><a href="userpage.jsp?username=<%= highestperfrs.getString("username") %>"><%= highestperfrs.getString("username") %></a></td> 
     <td align="center"><%= highestperfrs.getString("time") %></td> 
     <td align="center"><%= highestperfrs.getString("score") %></td> 
     <td align="center"><%= highestperfrs.getString("duration") %></td> 
@@ -198,7 +208,7 @@ background-color: #8dbdd8;
 		while (currenthighestperfrs.next()) {
 %>
 <tr>
-	<td align="center"><%= currenthighestperfrs.getString("username") %></td> 
+	<td align="center"><a href="userpage.jsp?username=<%= currenthighestperfrs.getString("username") %>"><%= currenthighestperfrs.getString("username") %></a></td> 
     <td align="center"><%= currenthighestperfrs.getString("time") %></td> 
     <td align="center"><%= currenthighestperfrs.getString("score") %></td> 
     <td align="center"><%= currenthighestperfrs.getString("duration") %></td> 
@@ -232,7 +242,7 @@ background-color: #8dbdd8;
 		while (currentperfrs.next()) {
 %>
 <tr>
-	<td align="center"><%= currentperfrs.getString("username") %></td> 
+	<td align="center"><a href="userpage.jsp?username=<%= currentperfrs.getString("username") %>"><%= currentperfrs.getString("username") %></a></td> 
     <td align="center"><%= currentperfrs.getString("time") %></td> 
     <td align="center"><%= currentperfrs.getString("score") %></td> 
     <td align="center"><%= currentperfrs.getString("duration") %></td> 

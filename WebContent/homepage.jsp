@@ -112,47 +112,24 @@
 <p><a href="friendRequest.jsp">Friend Requests</a>   You have <%= userDataManager.getUserNumNewFriendRequests(username) %> new friend request(s).</p>
 <p><a href="challenge.jsp">Challenges</a>   You have <%= userDataManager.getUserNumNewChallenges(username) %> new challenge(s).</p>
 <p><a href="CreateQuiz.jsp">Create New Quiz</a></p>
-<p><u>List of all quizzes:</u></p>
-<ul>
+<h3>List of Quizzes created recently by you:</h3>
 <%
+	rs = QzManager.getRecentlyCreatedQuizzes(username, 5);
+
+	if (!rs.isBeforeFirst()) {
+		out.println("<p>There is no new quiz in the system created by you.</p>");
+	} else {
+		out.println("<table style=\"border:20px\">");
+		out.println("<tr><td align=\"center\">Created Time</td><td align=\"center\">ID</td><td align=\"center\">Title</td>");
+		while (rs.next()) {
+			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"left\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
+		}
+		out.println("</table>");
+	}
 	
-	ResultSet quizrs = QzManager.getQuizList();
-	if (quizrs.next()) {
+
+	
 %>
-<li><a href="QuizPage.jsp?id=<%= quizrs.getString("quizId") %>"><%= quizrs.getString("title") %></a></li>
-<%		
-	} else {
-%>
-<li><p>No quizzes</p></li>
-<%	
-	}
-	while (quizrs.next()) {
-%>
-<li><a href="QuizPage.jsp?id=<%= quizrs.getString("quizId") %>"><%= quizrs.getString("title") %></a></li>
-<%
-	}
-%>
-</ul>
-<p><u>List of quizzes created by you:</u></p>
-<ul>
-<%
-	ResultSet quizUserRs = QzManager.getQuizListbyUser(username);
-	if (quizUserRs.next()) {
-%>
-<li><a href="QuizPage.jsp?id=<%= quizUserRs.getString("quizId") %>"><%= quizUserRs.getString("title") %></a></li>
-<%		
-	} else {
-%>
-<li><p>No quizzes created by you</p></li>
-<%	
-	}
-	while (quizUserRs.next()) {
-%>
-<li><a href="QuizPage.jsp?id=<%= quizUserRs.getString("quizId") %>"><%= quizUserRs.getString("title") %></a></li>
-<%
-	}
-%>
-</ul>
 <p><a href="searchUsers.jsp">Find Players</a></p>
 <p><a href="history.jsp">History</a></p>
 <p><a href="administratorTools.jsp"> Administrator Tools</a></p>
