@@ -122,7 +122,7 @@ public class XMLParser {
 				}
 				
 				//answer part
-				if(qType.equals("multiple-choice") || qType.equals("multiple-choice-multiple-answer")) {
+				if(qType.equals("multiple-choice") || qType.equals("multiple-choice-multiple-answer") || qType.equals("matching")) {
 					//options
 					if(tag == "option") {
 						//only put in correct answers
@@ -137,6 +137,7 @@ public class XMLParser {
 							answersCorrect.put(index, correctAnswers);
 						}
 						//put all options(including the correct answers above)
+						//matching will only deal with these without the answer attribute
 						List<String> options;
 						if(answerOptions.containsKey(index)) {
 							options = answerOptions.get(index);
@@ -146,9 +147,6 @@ public class XMLParser {
 						options.add(elem.getTextContent());
 						answerOptions.put(index, options);
 					}
-				} if (qType.equals("matching")) {
-					//TODO: put each option into answerOptions and answers into slots 
-					
 				} else {
 					if(tag == "answer") {
 						//there can be multiple correct answers
@@ -160,7 +158,7 @@ public class XMLParser {
 						}
 						correctAnswers.add(elem.getTextContent());
 						answersCorrect.put(index, correctAnswers);
-						//picture response answer
+						//picture response answer and matching answer list
 					} else if (tag == "answer-list") {
 						//there can be multiple correct answers
 						List<String> correctAnswers;

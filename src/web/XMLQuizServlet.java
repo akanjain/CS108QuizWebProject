@@ -76,7 +76,7 @@ public class XMLQuizServlet extends HttpServlet {
 			}
 
 			//add answers
-			if (questionTypes.get(i).equals("multiple-choice") || questionTypes.get(i).equals("multiple-choice-multiple-answer")) {
+			if (questionTypes.get(i).equals("multiple-choice") || questionTypes.get(i).equals("multiple-choice-multiple-answer") || questionTypes.get(i).equals("multiple-choice-multiple-answer")) {
 				//access both answers list and options list
 				List<String> options = answerOptions.get(i);
 				Set<String> answers = new HashSet<String>(answersCorrect.get(i));
@@ -91,9 +91,11 @@ public class XMLQuizServlet extends HttpServlet {
 				String[] optionsArray = options.toArray(new String[options.size()]);
 				QzManager.addMultiChoiceAnswer(quesNumber, optionsArray, correctArray);
 			} else if (questionTypes.get(i).equals("matching")) {
-				//TODO: add answers for matching
-				
-				
+				List<String> options = answersCorrect.get(i);
+				String[] choiceArray = options.toArray(new String[options.size()]);
+				List<String> answers = answersCorrect.get(i);
+				String[] ansArray = answers.toArray(new String[answers.size()]);
+				QzManager.addMatchingAnswer(quesNumber, choiceArray, ansArray);
 			} else {
 				//just answers list
 				List<String> answers = answersCorrect.get(i);
