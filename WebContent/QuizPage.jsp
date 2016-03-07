@@ -318,18 +318,22 @@ background-color: #8dbdd8;
 <%
 	}
 %>
-<%
-	if (!username.equals("guest")) {
-%>
 <form action="AddTagServlet" method="post">
 <input name="quizId" type="hidden" value="<%= idName %>"/>
 <h3><u>Enter Tag Name in the text box below and click "Add Tag" to assign tag to quiz.</u></h3>
 <p><input type="text" name="tagname" />
-<input type="submit" value="Add Tag"></p>
-</form>
+<%
+	if (username.equals("guest")) {
+%>
+<input type="submit" value="Add Tag" disabled/>You must login to add tag.</p>
+<%
+	} else {
+%>
+<input type="submit" value="Add Tag"/></p>
 <%
 	}
 %>
+</form>
 <p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>

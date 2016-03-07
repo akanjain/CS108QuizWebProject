@@ -588,15 +588,20 @@ public class QuizManager {
 	public Map<String, Set<String>> getAllQuizTags() {
 		Map<String, Set<String>> mp = new HashMap<String, Set<String>>();
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags");
+			//ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags");
+			String qry = "SELECT a.quizId, a.tagName, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId";
+			System.out.println(qry);
+			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String tagName = rs.getString("tagName");
 				String quizid = rs.getString("quizId");
+				String title = rs.getString("title");
+				String dateCreated = rs.getString("dateCreated");
 				if (!mp.containsKey(tagName.toLowerCase())) {
 					mp.put(tagName.toLowerCase(), new HashSet<String>());
 				}
 				Set<String> s = mp.get(tagName.toLowerCase());
-				s.add(quizid);
+				s.add(quizid + "," + title + "," + dateCreated);
 				mp.put(tagName.toLowerCase(), s);
 			}
 		} catch (SQLException e) {
@@ -606,19 +611,26 @@ public class QuizManager {
 		return mp;
 	}
 	
-	public Set<String> getAllQuizMatchingTags(String tag) {
+	public Map<String, Set<String>> getAllQuizMatchingTags(String tag) {
 		Set<String> allTagList = new HashSet<String>();
+		Map<String, Set<String>> mp = new HashMap<String, Set<String>>();
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags WHERE tagName = \"" + tag.toLowerCase() + "\"");
+			//String qry = "SELECT * FROM quizTags WHERE tagName = \"" + tag.toLowerCase() + "\" INNER JOIN quizzes USING (quizId)";
+			String qry = "SELECT a.quizId, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId AND a.tagName=\"" + tag.toLowerCase() + "\"";
+			System.out.println(qry);
+			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String quizid = rs.getString("quizId");
-				allTagList.add(quizid);
+				String title = rs.getString("title");
+				String dateCreated = rs.getString("dateCreated");
+				allTagList.add(quizid + "," + title + "," + dateCreated);
 			}
+			mp.put(tag.toLowerCase(), allTagList);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return allTagList;
+		return mp;
 	}
 	
 }
