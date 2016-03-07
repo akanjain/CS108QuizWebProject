@@ -65,8 +65,10 @@ background-color: #8dbdd8;
 	UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
 	ResultSet rs = QzManager.getQuiz(Integer.parseInt(idName));
 	String creatorName = null;
+	String isPractice = "false";
 	if (rs.next()) {
 		creatorName = rs.getString("creatorUsername");
+		isPractice = rs.getString("isPracticeMode");
 	}
 	String username = (String) request.getSession().getAttribute("username");
 %>
@@ -268,6 +270,9 @@ background-color: #8dbdd8;
 	}
 %>
 </form>
+<%
+	if (isPractice.equals("true")) {
+%>
 <form action="QuizPlayServlet" method="post">
 <p>
 <input name="quizId" type="hidden" value="<%= idName %>"/>
@@ -280,6 +285,9 @@ background-color: #8dbdd8;
 	}
 %>
 </form>
+<%
+	}
+%>
 <p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>

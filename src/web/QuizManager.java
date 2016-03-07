@@ -20,7 +20,8 @@ public class QuizManager {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes");
 			rs.last();
-			int quizNumber = rs.getRow() + 1;
+			String lastQuizNum = rs.getString("quizId");
+			int quizNumber = Integer.parseInt(lastQuizNum) + 1;
 			//String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
 			//+ "\", \"" + dateCreated + "\", '" + isRandom + "', '" + isOnePage + "', '" + isPracticeMode + "'," + numQuestions + ")";
 			String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
@@ -39,7 +40,8 @@ public class QuizManager {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM questions");
 			rs.last();
-			int questionNumber = rs.getRow() + 1;
+			String lastQuesNum = rs.getString("questionId");
+			int questionNumber = Integer.parseInt(lastQuesNum) + 1;
 			String qry = "INSERT INTO questions VALUES (" + questionNumber + ", " + quizNumber + ", \"" + questionType + "\", \"" + text + "\")";
 			System.out.println(qry);
 			stmt.executeUpdate(qry);
@@ -55,13 +57,15 @@ public class QuizManager {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM questions");
 			rs.last();
-			int questionNumber = rs.getRow() + 1;
+			String lastQuesNum = rs.getString("questionId");
+			int questionNumber = Integer.parseInt(lastQuesNum) + 1;
 			String qry = "INSERT INTO questions VALUES (" + questionNumber + ", " + quizNumber + ", \"" + questionType + "\", \"" + text + "\")";
 			System.out.println(qry);
 			stmt.executeUpdate(qry);
 			rs = stmt.executeQuery("SELECT * FROM numberSlots");
 			rs.last();
-			int keyNumber = rs.getRow() + 1;
+			String lastkeyNum = rs.getString("keyId");
+			int keyNumber = Integer.parseInt(lastkeyNum) + 1;
 			String qrySlot = "INSERT INTO numberSlots VALUES (" + keyNumber + ", " + questionNumber + ", " + numSlots + ")";
 			System.out.println(qrySlot);
 			stmt.executeUpdate(qrySlot);
@@ -77,7 +81,8 @@ public class QuizManager {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM answerOptions");
 			rs.last();
-			int keyNum = rs.getRow() + 1;
+			String lastkeyNum = rs.getString("keyId");
+			int keyNum = Integer.parseInt(lastkeyNum) + 1;
 			for (int i = 0; i < ansArray.length; i++) {
 				String qry = "INSERT INTO answerOptions VALUES (" + keyNum + ", " + questionNumber + ", \"" + ansArray[i] + "\", '" + correctArray[i] + "')";
 				System.out.println(qry);
@@ -94,7 +99,8 @@ public class QuizManager {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM matchingOptions");
 			rs.last();
-			int keyNum = rs.getRow() + 1;
+			String lastkeyNum = rs.getString("keyId");
+			int keyNum = Integer.parseInt(lastkeyNum) + 1;
 			for (int i = 0; i < choiceArray.length; i++) {
 				String qry = "INSERT INTO matchingOptions VALUES (" + keyNum + ", " + questionNumber + ", \"" + choiceArray[i] + "\", '" + answerArray[i] + "')";
 				System.out.println(qry);
@@ -111,7 +117,8 @@ public class QuizManager {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM answers");
 			rs.last();
-			int keyNum = rs.getRow() + 1;
+			String lastkeyNum = rs.getString("keyId");
+			int keyNum = Integer.parseInt(lastkeyNum) + 1;
 			for (int i = 0; i < ansArray.length; i++) {
 				String qry = "INSERT INTO answers VALUES (" + keyNum + ", " + questionNumber + ", \"" + ansArray[i] + "\")";
 				System.out.println(qry);
@@ -474,7 +481,8 @@ public class QuizManager {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM ratingNreviews");
 			rs.last();
-			int keyNumber = rs.getRow() + 1;
+			String lastkeyNum = rs.getString("keyId");
+			int keyNumber = Integer.parseInt(lastkeyNum) + 1;
 			String qry = "INSERT INTO ratingNreviews VALUES (" + keyNumber + ", " + quizNumber + ", \"" + username + "\", " + userRating + ", \"" + reviewText + "\")";
 			System.out.println(qry);
 			stmt.executeUpdate(qry);
