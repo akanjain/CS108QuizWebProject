@@ -33,27 +33,27 @@ public class XMLParser {
 	private static boolean isImmediate;
 	private static boolean isPracticeMode;
 	private static int numQuestions;
-	
+
 	private static List<String> questions; //query
 	private static List<String> qTypes; //type
 	private static Map<Integer, List<String>> answerOptions; // (question index, answer options)
 	private static Map<Integer, List<String>> answersCorrect; // (question index, correct answers)
-	private static Map<Integer, Integer> corrAnswerSlots; // (question index, correct answer slots)
-	
+	private static Map<Integer, Integer> corrAnswerSlots; // (question index, correct answer slots): for multi answer unordered questions
+
 	public XMLParser(String fileName) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
 			File fXmlFile = new File(fileName);
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(fXmlFile);
-			
+
 			//dateCreated = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 			questions = new ArrayList<String>();
 			qTypes = new ArrayList<String>();
 			answerOptions =  new HashMap<Integer, List<String>>();
 			answersCorrect = new HashMap<Integer, List<String>>();
 			corrAnswerSlots = new HashMap<Integer, Integer>();
-			
+
 			NodeList elemList = document.getChildNodes();
 			numQuestions = 0; 
 			for(int i = 0; i < elemList.getLength(); i++) {
@@ -90,17 +90,17 @@ public class XMLParser {
 	private static void parseQuestion(Element element) {
 		//index of current question
 		int index = qTypes.size();
-		
+
 		String qType = element.getAttribute("type");
 		qTypes.add(qType);
-		
+
 		NodeList children = element.getChildNodes();
 		for(int i = 0; i < children.getLength(); i++) {
 			Node child = children.item(i);
 			if(child.getNodeType() == Node.ELEMENT_NODE) {
 				Element elem = (Element) child;
 				String tag = elem.getTagName(); 
-				
+
 				//query part
 				if(tag == "query" || tag == "image-location") {
 					questions.add(elem.getTextContent());
@@ -120,7 +120,7 @@ public class XMLParser {
 					questions.add(query);
 					continue;
 				}
-				
+
 				//answer part
 				if(qType.equals("multiple-choice") || qType.equals("multiple-choice-multiple-answer") || qType.equals("matching")) {
 					//options
@@ -176,16 +176,15 @@ public class XMLParser {
 								answersCorrect.put(index, correctAnswers);
 							}
 						}
-						
-						if (qType.equals("multiple-answer-unordered")) {
-							corrAnswerSlots.put(index, answer_list.getLength());
-						}
+					} else if (tag == "numSlots") {
+						//qType.equals("multiple-answer-unordered"
+						corrAnswerSlots.put(index, Integer.parseInt(elem.getTextContent()));
 					}
 				}
 			}
 		}
 	}
-	
+
 	//public methods to access quiz information
 	public String getQuizTitle() {
 		return quizTitle;
@@ -199,7 +198,7 @@ public class XMLParser {
 	/*public String getDateCreated() {
 		return dateCreated;
 	}*/
-	
+
 	public boolean isRandom() {
 		return isRandom;
 	}
@@ -215,7 +214,7 @@ public class XMLParser {
 	public int numQuestions() {
 		return numQuestions;
 	}
-	
+
 	public List<String> getQuestions() {
 		return questions;
 	}
@@ -231,7 +230,7 @@ public class XMLParser {
 	public int getNumSlots(int index) {
 		return corrAnswerSlots.get(index);
 	}
-	
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 	}
