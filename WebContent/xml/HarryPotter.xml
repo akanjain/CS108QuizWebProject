@@ -4,38 +4,100 @@
 <category>Movies</category>
 <description>This is a quiz about the Harry Potter series.</description>
 
+<!--done-->
 <question type="question-response">
-  <query>Who is the man referred to as "he who must not be named"?</query>
+  <query>What is the name of the man referred to as HE-WHO-MUST-NOT-BE-NAMED?</query>
   <answer>Voldemort</answer>
   <answer>Lord Voldemort</answer>
   <answer>Tom Riddle</answer>
 </question>
 
+<!--done-->
 <question type="fill-in-blank">
-  <blank-query><pre>The book</pre><blank /><post>Down, about a bunch of rabbits, won the 1972 Carnegie Medal</post></blank-query>
-  <answer>Watership</answer>
+  <blank-query><pre>Ron and </pre><blank /><post>became best friends during their first year at Hogwarts and eventually get married.</post></blank-query>
+  <answer>Hermione</answer>
+  <answer>Hermione Granger</answer>
 </question>
 
 <question type="multiple-choice">
-  <query>Which of the following statements is false</query>
-  <option>Aztec mythology includes a rabbit pantheon.</option>
-  <option>In Japanese folklore, rabbits live on the moon.</option>
-  <option answer="answer">In Stanford tradition, rubbing the nose of a rabbit guarantees an A on the CS108 class project</option>
+  <query>Which of the following spells fends off Dementors with a white shield of positive energy?</query>
+  <option>Ennervate</option>
+  <option>Lumos</option>
+  <option>Muffliato</option>
+  <option>Obliviate</option>
+  <option answer="answer">Expecto Patronum </option>
 </question>
 
-<question type="picture-response">
-  <image-location>http://upload.wikimedia.org/wikipedia/en/b/b9/Bugs_Bunny_Pose.PNG</image-location>
+<question type="multiple-choice-multiple-answer">
+  <query>What were names of Harry Potter's parents?</query>
+  <option>Albus</option>
+  <option>Severus</option>
+  <option>Minerva</option>
+  <option answer="answer">James</option>
+  <option answer="answer">Lily</option>
+</question>
+
+<question type="matching">
+  <query>Match each person with their pet.</query>
+  <option>Harry Potter</option>
+  <option>Ron Weasley</option>
+  <option>Argus Filch</option>
+  <option>Albus Dumbledore</option>
+  <option>Tom Riddle</option>
   <answer-list>
-    <answer preferred="preferred">Bugs Bunny</answer>
-	<answer>Bugs</answer>
+    <answer>Hedwig</answer>
+    <answer>Scabbers</answer>
+    <answer>Mrs. Norris</answer>
+    <answer>Fawkes</answer>
+    <answer>Nagini</answer>
   </answer-list>
 </question>
 
-<question type="multiple-choice">
-  <query>Which of the following statements is false</query>
-  <option>Aztec mythology includes a rabbit pantheon.</option>
-  <option>In Japanese folklore, rabbits live on the moon.</option>
-  <option answer="answer">In Stanford tradition, rubbing the nose of a rabbit guarantees an A on the CS108 class project</option>
+<question type="multiple-answer-unordered">
+  <query>List 5 student that were in the Dumbledore's Army (format: FirstName LastName)</query>
+  <answer-list>
+    <answer>Hannah Abbott</answer>
+    <answer>Katie Bell</answer>
+    <answer>Susan Bones</answer>
+    <answer>Terry Boot</answer>
+    <answer>Lavender Brown</answer>
+    <answer>Cho Chang</answer>
+    <answer>Michael Corner</answer>
+    <answer>Colin Creevey</answer>
+    <answer>Dennis Creevey</answer>
+    <answer>Marietta Edgecombe</answer>
+    <answer>Justin Finch-Fletchley</answer>
+    <answer>Seamus Finnigan</answer>
+    <answer>Anthony Goldstein</answer>
+    <answer>Angelina Johnson</answer>
+    <answer>Lee Jordan</answer>
+    <answer>Neville Longbottom</answer>
+    <answer>Luna Lovegood</answer>
+    <answer>Ernie Macmillanv</answer>
+    <answer>Padma Patilv</answer>
+    <answer>Parvati Patil</answer>
+    <answer>Zacharias Smith</answer>
+    <answer>Alicia Spinnet</answer>
+    <answer>Dean Thomas</answer>
+    <answer>Fred Weasley</answer>
+    <answer>George Weasley</answer>
+    <answer>Ginny Weasley</answer>
+    <answer>Ron Weasley</answer>
+    <answer>Harry Potter</answer>
+    <answer>Hermione Granger</answer>
+  </answer-list>
+  <numSlots>5</numSlots>
+</question>
+
+<question type="multiple-answer-ordered">
+  <query>List the 7 full titles of the Harry Potter series in order</query>
+  <answer>Harry Potter and the Sorcerer's Stone</answer>
+  <answer>Harry Potter and the Chamber of Secrets</answer>
+  <answer>Harry Potter and the Prisoner of Azkaban</answer>
+  <answer>Harry Potter and the Goblet of Fire</answer>
+  <answer>Harry Potter and the Order of Pheonix</answer>
+  <answer>Harry Potter and the Half Blood Prince</answer>
+  <answer>Harry Potter and the Deathly Hallows</answer>
 </question>
 
 </quiz>

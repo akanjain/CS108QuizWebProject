@@ -62,7 +62,7 @@ public class XMLParser {
 				isOnePage = Boolean.parseBoolean(quiz.getAttribute("one-page"));
 				isImmediate = Boolean.parseBoolean(quiz.getAttribute("immediate-correction"));
 				isPracticeMode = Boolean.parseBoolean(quiz.getAttribute("practice-mode"));
-					
+
 				numQuestions = 0; 
 				NodeList elemList = quiz.getChildNodes();
 				for(int j = 0; j < elemList.getLength(); j++) {
@@ -81,7 +81,7 @@ public class XMLParser {
 					}
 				}
 			}
-			
+
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -127,7 +127,7 @@ public class XMLParser {
 				}
 
 				//answer part
-				if(qType.equals("multiple-choice") || qType.equals("multiple-choice-multiple-answer") || qType.equals("matching")) {
+				if(qType.equals("multiple-choice") || qType.equals("multiple-choice-multiple-answer")) {
 					//options
 					if(tag == "option") {
 						//only put in correct answers
@@ -151,6 +151,36 @@ public class XMLParser {
 						}
 						options.add(elem.getTextContent());
 						answerOptions.put(index, options);
+					}
+				} else if (qType.equals("matching")) {
+					//options
+					if(tag == "option") {
+						//matching will only deal with these without the answer attribute
+						List<String> options;
+						if(answerOptions.containsKey(index)) {
+							options = answerOptions.get(index);
+						} else {
+							options = new ArrayList<String>();
+						}
+						options.add(elem.getTextContent());
+						answerOptions.put(index, options);
+					} else if (tag == "answer-list") {
+						//there can be multiple correct answers
+						List<String> correctAnswers;
+						NodeList answer_list = element.getElementsByTagName("answer");
+						for(int j = 0; j < answer_list.getLength(); j++) {
+							Node n = answer_list.item(j);
+							if(n.getNodeType() == Node.ELEMENT_NODE) {
+								Element answer = (Element) n;
+								if(answersCorrect.containsKey(index)) {
+									correctAnswers = answersCorrect.get(index);
+								} else {
+									correctAnswers = new ArrayList<String>();
+								}
+								correctAnswers.add(answer.getTextContent());
+								answersCorrect.put(index, correctAnswers);
+							}
+						}	
 					}
 				} else {
 					if(tag == "answer") {

@@ -9,7 +9,7 @@
 <body>
 <h1>New XML Quiz Creator</h1>
 <p>Enter the XML file name below (i.e. buddy.xml): </p>
-<form action="../XMLQuizServlet" method="post">
+<form action="XMLQuizServlet" method="post">
 <p><input type="text" name="fileName" size="50" value=""></p>
 <p><input type="submit" value = "Load File"></p>
 </form>
