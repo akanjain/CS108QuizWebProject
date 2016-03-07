@@ -10,11 +10,14 @@
 <title>Find Players</title>
 </head>
 <body>
-<h3>To list all users, leave the this field blank.</h3>
+<h3>Enter keyword to search for users.</h3>
+<p>(Leave the field blank to list all users)</p>
 <form action="SearchUsersServlet" method="post">
 <input type="text" name="keyword">
 <input type="submit" name="search">
 <input type="hidden" name="action" value="search">
+
+<h3>Search Results</h3>
 </form>
 
 
@@ -33,6 +36,7 @@
 		if (!rs.isBeforeFirst()) {
 			out.println("<p>There is no match for your search</p>.");
 		} else {
+			out.println("<p>To add user as friend, select user and click \"add to friends\"</p>");
 			out.println("<form action=\"SearchUsersServlet\" method=\"post\">");
 			
 			UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
@@ -45,16 +49,19 @@
 				userList.add(rs.getString("username"));
 			}
 			
+			out.println("<table>");
 			for (String username : userList) {
+				
 				if (username.equals(currUserName)) {
-					out.println("<p><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a> This is you.</p>");
+					out.println("<tr><td><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a></td><td> This is you.</td></tr>");
 				} else if (userDataManager.areFriends(currUserName, username)) {
-					out.println("<p><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a>  Already your friend.</p>");
+					out.println("<tr><td><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a></td><td>  Already your friend.</td></tr>");
 				} else {
-					out.println("<p><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a>  <input type=\"checkbox\" name=\"" + username + "\"></p>");
+					out.println("<tr><td><a href=\"userpage.jsp?username=" + username + "\">" + username + "</a></td><td>  <input type=\"checkbox\" name=\"" + username + "\"></td></tr>");
 				}
+				
 			}
-			
+			out.println("</table>");
 			out.println("<p><input type=\"submit\" value=\"add to friends\">");
 			out.println("<input type=\"hidden\" name=\"action\" value=\"add\">");
 			out.println("</form>");

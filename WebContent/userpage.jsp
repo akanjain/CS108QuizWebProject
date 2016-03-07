@@ -74,7 +74,14 @@
 <h3>To add this user as your friend, please enter your message and click "Add To Friends".</h3>
 <form action="UserpageServlet" method="post">
 <input type="text" name="message">
-<input type="submit" value="Add To Friends">
+<%
+	if (((String) request.getSession().getAttribute("username")).equals("guest")) {
+		out.println("<input type=\"submit\" value=\"Add To Friends\" disabled> You must login to add friends.");
+	} else {
+		out.println("<input type=\"submit\" value=\"Add To Friends\">");
+	}
+%>
+
 <input type="hidden" name="toUser" value="<%= username %>">
 </form>
 <%

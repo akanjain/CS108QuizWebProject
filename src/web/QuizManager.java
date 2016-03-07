@@ -265,6 +265,7 @@ public class QuizManager {
 			stmt.executeUpdate("DELETE FROM matchingOptions WHERE questionId = " + questionNumber + ";");
 			stmt.executeUpdate("DELETE FROM numberSlots WHERE questionId = " + questionNumber + ";");
 			
+			
 			/* Delete question. */
 			stmt.executeUpdate("DELETE FROM questions WHERE questionId = " + questionNumber + ";");
 
@@ -305,7 +306,10 @@ public class QuizManager {
 				removeQuestion(questionId);
 			}
 			
-			stmt.executeUpdate("DELETE FROM quizzes WHERE quizId = " +  quizNumber + ';');
+			/* Remove review and rating of quiz. */
+			stmt.executeUpdate("DELETE FROM ratingNreviews WHERE quizId = " + quizNumber + ";");
+			
+			stmt.executeUpdate("DELETE FROM quizzes WHERE quizId = " +  quizNumber + ";");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -22,38 +22,51 @@
 	<p> Total Quizzes:  <%= quizManager.getNumQuizzes() %> </p>
 	<p> Total Play Count:  <%= quizManager.getNumQuizRecords() %> </p>
 	
+	<h3>Creates Announcement</h3>
 	<form action="AdministratorToolsServlet" method="post">
 	<p>
 		<input type="hidden" name="option" value="Create Announcement">
-		<input type="text" name="announcement"><input type="submit" value="Create Announcement">
+		<input type="text" name="announcement">  (Enter Announcement)
 	</p>
+	<input type="submit" value="Create Announcement">
 	</form>
+	
+	<h3>Give User Administrator Role</h3>
 	<form action="AdministratorToolsServlet" method="post">
 	<p>
 		<input type="hidden" name="option" value="Promote User">
-		<input type="text" name="username"><input type="submit" value="Promote User">
+		<input type="text" name="username">  (Enter User Name Here)
 	</p>
+	<input type="submit" value="Promote User">
 	</form>
+	<h3>Remove User Account</h3>
 	<form action="AdministratorToolsServlet" method="post">
 	<p>
 		<input type="hidden" name="option" value="Remove User">
-		<input type="text" name="username"><input type="submit" value="Remove User">
+		<input type="text" name="username">  (Enter User Name Here)
 	</p>
+	<input type="submit" value="Remove User">
 	</form>
 	
+	<h3>Remove Quiz</h3>
 	<form action="AdministratorToolsServlet" method="post">
 	<p>
 		<input type="hidden" name="option" value="Remove Quiz">
-		<input type="text" name="quizNumber"><input type="submit" value="Remove Quiz">
+		<input type="text" name="quizNumber">  (Enter Quiz ID Here)
 	</p>
+	<input type="submit" value="Remove Quiz">
 	</form>
 	
+	<h3>Clear Quiz History</h3>
 	<form action="AdministratorToolsServlet" method="post">
 	<p>
 		<input type="hidden" name="option" value="Clear Quiz History">
-		<input type="text" name="quizNumber"><input type="submit" value="Clear Quiz History">
+		<input type="text" name="quizNumber">  (Enter Quiz ID Here) 
 	</p>
+	<input type="submit" value="Clear Quiz History">
 	</form>
+	
+	<h3>To Load XML Quiz, Click <a href="LoadXMLQuiz.jsp">Here</a></h3>
 	
 	<%
 		String returnStatus = (String) request.getAttribute("Return Status");
@@ -62,6 +75,8 @@
 		}
 	%>
 	
+<br>
+<br>
 <p>Go back to <a href="homepage.jsp">Homepage</a></p>
 
 </body>

@@ -51,6 +51,10 @@ public class MultiplePageServlet extends HttpServlet {
 		int numQuestion = (Integer) request.getSession().getAttribute("currentQuizTotalQuestions");
 		String isImm = (String) request.getSession().getAttribute("isImmediate");
 		String isPracticeMode = (String) request.getSession().getAttribute("isPracticeMode");
+		UserDataManager userDataManager = (UserDataManager) sc.getAttribute("User Data Manager");
+		String username = (String) request.getSession().getAttribute("username");
+		int quizId = (Integer) request.getSession().getAttribute("quizId");
+		QuizManager quizManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
 		
 		String token = request.getParameter("token");
 		
@@ -68,6 +72,9 @@ public class MultiplePageServlet extends HttpServlet {
 		}
 		
 		if (token.equals("End Practice")) {
+			/* Check practice mode achievement. */
+			userDataManager.updateUserAchievements(UserDataManager.Achievements.PRACTICE_MODE, username, quizId, 0);
+			
 			RequestDispatcher dispatcher = request.getRequestDispatcher("PracticeEnd.jsp");
 			dispatcher.forward(request, response);
 		}
@@ -85,6 +92,7 @@ public class MultiplePageServlet extends HttpServlet {
 				session.setAttribute("currentQuizTotalQuestions", currentQuiz.getNumQuestion());
 				currentQuiz.setQuestionIndexes();
 				if (currentQuiz.getNumQuestion() == 0) {
+					userDataManager.updateUserAchievements(UserDataManager.Achievements.PRACTICE_MODE, username, quizId, 0);
 					RequestDispatcher dispatcher = request.getRequestDispatcher("PracticeEnd.jsp");
 					dispatcher.forward(request, response);
 				} else {
@@ -132,10 +140,6 @@ public class MultiplePageServlet extends HttpServlet {
 			request.setAttribute("elapsedTime", timeTaken);
 			
 			/* Update quiz records and achievements. */
-			String username = (String) request.getSession().getAttribute("username");
-			int quizId = (Integer) request.getSession().getAttribute("quizId");
-			QuizManager quizManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
-			UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
 			/* Insert to quiz records. */
 			quizManager.addUserQuizRecord(username, quizId, (int) totalTime , score);
 			/* Update achievements. */

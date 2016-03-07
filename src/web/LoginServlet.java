@@ -42,16 +42,16 @@ public class LoginServlet extends HttpServlet {
 		AccountManager manager = (AccountManager) request.getServletContext().getAttribute("Account Manager");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-					
-		if (!manager.accountExist(username) || !manager.checkCredential(username, password)) {
-			RequestDispatcher dispatcher = request.getRequestDispatcher("loginIncorrect.html");
-			dispatcher.forward(request, response);
+		RequestDispatcher dispatcher;
+		
+		if (username.equals("guest")) {
+			dispatcher = request.getRequestDispatcher("guestHomepage.jsp");
+		} else if (!manager.accountExist(username) || !manager.checkCredential(username, password)) {
+			dispatcher = request.getRequestDispatcher("loginIncorrect.html");
 		} else {
-
-			RequestDispatcher dispatcher = request.getRequestDispatcher("homepage.jsp");
-			dispatcher.forward(request, response);
-			
+			dispatcher = request.getRequestDispatcher("homepage.jsp");		
 		}
+		dispatcher.forward(request, response);
 		
 	}
 

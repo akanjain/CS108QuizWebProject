@@ -43,7 +43,7 @@ public class CreateAccountServlet extends HttpServlet {
 		
 		/* If account asked to create already exist, go to "NameInUse" page, 
 		 * Otherwise go to welcome page. */
-		if (manager.accountExist(username)) {
+		if (manager.accountExist(username) || username.equals("guest")) {
 			RequestDispatcher dispatcher = request.getRequestDispatcher("nameInUse.jsp");
 			dispatcher.forward(request, response);
 		} else {

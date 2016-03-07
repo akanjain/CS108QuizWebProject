@@ -28,7 +28,7 @@
 			out.println("<p><input type=\"radio\" name=\"toUser\" value=\"" + rs.getString("toUser") + "\">" + rs.getString("toUser") + "</p>");
 		}
 		
-		out.println("<p><input type=\"text\" name=\"quizId\">Enter a Quiz ID Here</p>");
+		out.println("<p><input type=\"text\" name=\"quizId\"> (Enter quiz ID here to send challenge)</p>");
 		out.println("<p><input type=\"submit\" value=\"Send a Challenge!\"></p>");
 		out.println("<input type=\"hidden\" name=\"option\" value=\"send\">");
 		out.println("</form>");
@@ -61,5 +61,8 @@
 		
 	%>
 
+<br>
+<br>
+<p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>

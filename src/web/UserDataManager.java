@@ -430,7 +430,7 @@ public class UserDataManager {
 					}					
 					break;
 				case PRACTICE_MODE:
-					rs = stmt.executeQuery("SELECT * FROM achievements WHERE username = \"" + username + "\" AND achievements = \"Practice Makes Perfect\";");
+					rs = stmt.executeQuery("SELECT * FROM achievements WHERE username = \"" + username + "\" AND achievement = \"Practice Makes Perfect\";");
 					if (!rs.isBeforeFirst()) {
 						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Practice Makes Perfect\",\"" + timeStamp + "\");");
 					}

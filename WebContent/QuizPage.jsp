@@ -260,13 +260,25 @@ background-color: #8dbdd8;
 <p>
 <input name="quizId" type="hidden" value="<%= idName %>"/>
 <input name="quizMode" type="hidden" value="realtest"/>
-<input type="submit" value="Start Taking Quiz" /></p>
+<%
+	if (username.equals("guest")) {
+		out.println("<input type=\"submit\" value=\"Start Taking Quiz\" disabled/></p>");
+	} else {
+		out.println("<input type=\"submit\" value=\"Start Taking Quiz\" /></p>");
+	}
+%>
 </form>
 <form action="QuizPlayServlet" method="post">
 <p>
 <input name="quizId" type="hidden" value="<%= idName %>"/>
 <input name="quizMode" type="hidden" value="practice"/>
-<input type="submit" value="Start Taking Quiz in Practice Mode" /></p>
+<%
+	if (username.equals("guest")) {
+		out.println("<input type=\"submit\" value=\"Start Taking Quiz in Practice Mode\" disabled/> You must login to take quiz.</p>");
+	} else {
+		out.println("<input type=\"submit\" value=\"Start Taking Quiz in Practice Mode\" /></p>");
+	}
+%>
 </form>
 <p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
