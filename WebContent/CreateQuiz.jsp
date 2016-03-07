@@ -13,7 +13,7 @@
 <form action="QuizCreatorServlet" method="post">
 <p>Quiz title:<input type="text" name="quizTitle" size="50" value=""></p>
 <p>Quiz description:<input type="text" name="quizDescription" size="50" value=""></p>
-<p>Quiz category(Leave blank for no category):<input type="text" name="quizCategory" size="50" value=""></p>
+<p>Quiz category(Enter "Other" for no category):<input type="text" name="quizCategory" size="50" value=""></p>
 <input name="quizCreator" type="hidden" value="<%= request.getSession().getAttribute("username") %>"/>
 <input name="quizDate" type="hidden" value="<%= new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) %>"/>
 <p><input type="checkbox" name="preferences" value="random"> Random Order</p>

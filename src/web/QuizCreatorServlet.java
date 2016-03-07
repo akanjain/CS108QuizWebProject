@@ -69,6 +69,9 @@ public class QuizCreatorServlet extends HttpServlet {
 				}
 			}
 		}
+		if (quizCategory.equals("")) {
+			quizCategory = "Other";
+		}
 		int numQuestions = Integer.parseInt(request.getParameter("numQuestion"));
 		int quizNum = QzManager.createQuiz(quizTitle, quizDescription, quizCategory, creatorName, dateCreated, isRandom, isOnePage, isImmediate, isPracticeMode, numQuestions);
 		userDataManager.updateUserAchievements(Achievements.CREATE_QUIZ, username, quizNum, 0);

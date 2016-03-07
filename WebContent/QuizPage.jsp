@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.*" %>
 <%@ page import="web.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -71,13 +72,42 @@ background-color: #8dbdd8;
 		isPractice = rs.getString("isPracticeMode");
 	}
 	String username = (String) request.getSession().getAttribute("username");
+	int timeFrame = 6*24*60;
 %>
 	<h1>Welcome to Quiz Page.</h1>
 	<h3><u>Quiz ID:</u> <%= idName %></h3>
 	<h3><u>Quiz Title:</u> <%= rs.getString("title") %></h3>
 	<h3><u>Quiz Description:</u> <%= rs.getString("description") %></h3>
-	<h3><u>Quiz Category:</u> <%= rs.getString("category") %></h3>
+	<h3><u>Quiz Category:</u> <a href="quizbycategorypage.jsp?id=<%= rs.getString("category") %>"><%= rs.getString("category") %></a></h3>
 <%
+	rs = QzManager.getQuizTags(Integer.parseInt(idName));
+	Set<String> allTags = new TreeSet<String>();
+	while (rs.next()) {
+		allTags.add(rs.getString("tagName").toLowerCase());
+	}
+	if (allTags.size() == 0) {
+		out.println("<h3><u>Quiz Tags:</u> No Tags Assigned.");
+	} else {
+%>
+		<h3><u>Quiz Tags:</u> [
+<%		
+		Iterator<String> iter = allTags.iterator();
+		if (iter.hasNext()) {
+			String s = iter.next();
+%>
+			<a href="quizbytagpage.jsp?id=<%= s %>"><%= s %></a>
+<%			
+		}
+		while (iter.hasNext()) {
+			String s = iter.next();
+%>
+			, <a href="quizbytagpage.jsp?id=<%= s %>"><%= s %></a>
+<%
+		}
+%>
+		]</h3>
+<%
+	}
 	if (userDataManager.isUserAccountValid(creatorName)) {
 %>
 	<h3><b>Quiz Created by</b> <a href="userpage.jsp?username=<%= creatorName %>"><%= creatorName %></a></h3>
@@ -191,7 +221,7 @@ background-color: #8dbdd8;
 %> 
 <h3><u>List of recent top performers:</u></h3>
 <%	
-	ResultSet currenthighestperfrs = QzManager.getHighestPerformers(Integer.parseInt(idName), 5*24*60, 5);
+	ResultSet currenthighestperfrs = QzManager.getHighestPerformers(Integer.parseInt(idName), timeFrame, 5);
 	if (!currenthighestperfrs.isBeforeFirst()) {
 		out.println("<p>No user has played this quiz recently.</p>");
 	} else {
@@ -225,7 +255,7 @@ background-color: #8dbdd8;
 %> 
 <h3><u>List of recent quiz takers and their score:</u></h3>
 <%	
-	ResultSet currentperfrs = QzManager.getPerformers(Integer.parseInt(idName), 5*24*60, 20);
+	ResultSet currentperfrs = QzManager.getPerformers(Integer.parseInt(idName), timeFrame, 20);
 	if (!currentperfrs.isBeforeFirst()) {
 		out.println("<p>No user has played this quiz recently.</p>");
 	} else {
@@ -284,6 +314,18 @@ background-color: #8dbdd8;
 		out.println("<input type=\"submit\" value=\"Start Taking Quiz in Practice Mode\" /></p>");
 	}
 %>
+</form>
+<%
+	}
+%>
+<%
+	if (!username.equals("guest")) {
+%>
+<form action="AddTagServlet" method="post">
+<input name="quizId" type="hidden" value="<%= idName %>"/>
+<h3><u>Enter Tag Name in the text box below and click "Add Tag" to assign tag to quiz.</u></h3>
+<p><input type="text" name="tagname" />
+<input type="submit" value="Add Tag"></p>
 </form>
 <%
 	}
