@@ -58,6 +58,11 @@ public class XMLParser {
 			Node quizNode = quizes.item(0);
 			if(quizNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element quiz = (Element) quizNode;
+				isRandom = Boolean.parseBoolean(quiz.getAttribute("random"));
+				isOnePage = Boolean.parseBoolean(quiz.getAttribute("one-page"));
+				isImmediate = Boolean.parseBoolean(quiz.getAttribute("immediate-correction"));
+				isPracticeMode = Boolean.parseBoolean(quiz.getAttribute("practice-mode"));
+					
 				numQuestions = 0; 
 				NodeList elemList = quiz.getChildNodes();
 				for(int j = 0; j < elemList.getLength(); j++) {

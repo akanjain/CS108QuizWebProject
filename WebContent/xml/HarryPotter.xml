@@ -1,1 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<quiz random="false" one-page="false" practice-mode="true">
+<title>Harry Potter Quiz</title>
+<category>Movies</category>
+<description>This is a quiz about the Harry Potter series.</description>
+
+<question type="question-response">
+  <query>Who is the man referred to as "he who must not be named"?</query>
+  <answer>Voldemort</answer>
+  <answer>Lord Voldemort</answer>
+  <answer>Tom Riddle</answer>
+</question>
+
+<question type="fill-in-blank">
+  <blank-query><pre>The book</pre><blank /><post>Down, about a bunch of rabbits, won the 1972 Carnegie Medal</post></blank-query>
+  <answer>Watership</answer>
+</question>
+
+<question type="multiple-choice">
+  <query>Which of the following statements is false</query>
+  <option>Aztec mythology includes a rabbit pantheon.</option>
+  <option>In Japanese folklore, rabbits live on the moon.</option>
+  <option answer="answer">In Stanford tradition, rubbing the nose of a rabbit guarantees an A on the CS108 class project</option>
+</question>
+
+<question type="picture-response">
+  <image-location>http://upload.wikimedia.org/wikipedia/en/b/b9/Bugs_Bunny_Pose.PNG</image-location>
+  <answer-list>
+    <answer preferred="preferred">Bugs Bunny</answer>
+	<answer>Bugs</answer>
+  </answer-list>
+</question>
+
+<question type="multiple-choice">
+  <query>Which of the following statements is false</query>
+  <option>Aztec mythology includes a rabbit pantheon.</option>
+  <option>In Japanese folklore, rabbits live on the moon.</option>
+  <option answer="answer">In Stanford tradition, rubbing the nose of a rabbit guarantees an A on the CS108 class project</option>
+</question>
+
+</quiz>
