@@ -47,7 +47,9 @@ public class XMLQuizServlet extends HttpServlet {
 		//create quiz
 		String creatorName = "ADMIN";
 		String fileName = request.getParameter("fileName");
-		XMLParser xml = new XMLParser(fileName);
+		String path = sc.getRealPath("/xml/") + fileName;
+		System.out.println(path);
+		XMLParser xml = new XMLParser(path);
 		String quizTitle = xml.getQuizTitle();
 		String quizDescription = xml.getQuizDescription();
 		String quizCategory = xml.getQuizCategory();
@@ -78,6 +80,8 @@ public class XMLQuizServlet extends HttpServlet {
 			//add answers
 			if (questionTypes.get(i).equals("multiple-choice") || questionTypes.get(i).equals("multiple-choice-multiple-answer") || questionTypes.get(i).equals("multiple-choice-multiple-answer")) {
 				//access both answers list and options list
+				System.out.println("Current Index: ");
+				System.out.println(i);
 				List<String> options = answerOptions.get(i);
 				Set<String> answers = new HashSet<String>(answersCorrect.get(i));
 				boolean[] correctArray = new boolean[options.size()];

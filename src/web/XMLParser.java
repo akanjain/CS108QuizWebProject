@@ -40,10 +40,10 @@ public class XMLParser {
 	private static Map<Integer, List<String>> answersCorrect; // (question index, correct answers)
 	private static Map<Integer, Integer> corrAnswerSlots; // (question index, correct answer slots): for multi answer unordered questions
 
-	public XMLParser(String fileName) {
+	public XMLParser(String path) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
-			File fXmlFile = new File(fileName);
+			File fXmlFile = new File(path);
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(fXmlFile);
 
@@ -54,29 +54,29 @@ public class XMLParser {
 			answersCorrect = new HashMap<Integer, List<String>>();
 			corrAnswerSlots = new HashMap<Integer, Integer>();
 
-			NodeList elemList = document.getChildNodes();
-			numQuestions = 0; 
-			for(int i = 0; i < elemList.getLength(); i++) {
-				Node node = elemList.item(i);
-				if(node.getNodeType() == Node.ELEMENT_NODE) {
-					Element element= (Element) node;
-					String tagName = element.getTagName();
-					//question
-					if(tagName == "question") {
-						parseQuestion(element);
-						numQuestions++;
+			NodeList quizes = document.getElementsByTagName("quiz");
+			Node quizNode = quizes.item(0);
+			if(quizNode.getNodeType() == Node.ELEMENT_NODE) {
+				Element quiz = (Element) quizNode;
+				numQuestions = 0; 
+				NodeList elemList = quiz.getChildNodes();
+				for(int j = 0; j < elemList.getLength(); j++) {
+					Node node = elemList.item(j);
+					if(node.getNodeType() == Node.ELEMENT_NODE) {
+						Element element= (Element) node;
+						String tagName = element.getTagName();
+						//question
+						if(tagName == "question") {
+							parseQuestion(element);
+							numQuestions++;
+						}
+						else if (tagName == "title") quizTitle = element.getTextContent();	
+						else if(tagName == "category") quizCategory = element.getTextContent();
+						else if(tagName == "description") quizDescription = element.getTextContent();
 					}
-					else if (tagName == "quiz") {
-						isRandom = Boolean.parseBoolean(element.getAttribute("random"));
-						isOnePage = Boolean.parseBoolean(element.getAttribute("one-page"));
-						isImmediate = Boolean.parseBoolean(element.getAttribute("immediate-correction"));
-						isPracticeMode = Boolean.parseBoolean(element.getAttribute("practice-mode"));
-					}
-					else if (tagName == "title") quizTitle = element.getTextContent();	
-					else if(tagName == "category") quizCategory = element.getTextContent();
-					else if(tagName == "description") quizDescription = element.getTextContent();
 				}
 			}
+			
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
@@ -126,7 +126,7 @@ public class XMLParser {
 					//options
 					if(tag == "option") {
 						//only put in correct answers
-						if(elem.getAttribute("answer") == "answer") {
+						if(elem.getAttribute("answer").equals("answer")) {
 							List<String> correctAnswers;
 							if(answersCorrect.containsKey(index)) {
 								correctAnswers = answersCorrect.get(index);
