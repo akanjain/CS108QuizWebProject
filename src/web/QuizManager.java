@@ -713,6 +713,46 @@ public class QuizManager {
 		}
 	}
 	
+	public Map<String, String> getRatedQuizList() {
+		Map<String, String> mp = new HashMap<String, String>();
+		Map<String, String> titlemp = new HashMap<String, String>();
+		Map<String, String> datemp = new HashMap<String, String>();
+		Map<String, Integer> countmp = new HashMap<String, Integer>();
+		Map<String, Integer> ratingmp = new HashMap<String, Integer>();
+		try {
+			String qry = "SELECT a.quizId, a.rating, b.title, b.dateCreated FROM ratingNreviews a, quizzes b WHERE a.quizId = b.quizId";
+			System.out.println(qry);
+			ResultSet rs = stmt.executeQuery(qry);
+			while (rs.next()) {
+				String rating = rs.getString("rating");
+				String quizid = rs.getString("quizId");
+				String title = rs.getString("title");
+				String dateCreated = rs.getString("dateCreated");
+				if (!countmp.containsKey(quizid)) {
+					titlemp.put(quizid, title);
+					datemp.put(quizid, dateCreated);
+					countmp.put(quizid, 1);
+					ratingmp.put(quizid, Integer.parseInt(rating));
+				} else {
+					countmp.put(quizid, countmp.get(quizid)+1);
+					ratingmp.put(quizid, ratingmp.get(quizid) + Integer.parseInt(rating));
+				}
+			}
+			for (String key : countmp.keySet()) {
+				int count = countmp.get(key);
+				int totalrating = ratingmp.get(key);
+				String titlename = titlemp.get(key);
+				String dateCreated = datemp.get(key);
+				double averageRating = ((double) totalrating)/count;
+				mp.put(key, dateCreated + "," + titlename + "," + count + "," + averageRating);  
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mp;
+	}
+	
 	public synchronized void addQuizTag(int quizNumber, String tagText) {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags");
