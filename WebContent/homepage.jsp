@@ -111,7 +111,6 @@
 <p><a href="message.jsp">Messages</a>   You have <%= userDataManager.getUserNumNewMessages(username) %> new message(s).</p>
 <p><a href="friendRequest.jsp">Friend Requests</a>   You have <%= userDataManager.getUserNumNewFriendRequests(username) %> new friend request(s).</p>
 <p><a href="challenge.jsp">Challenges</a>   You have <%= userDataManager.getUserNumNewChallenges(username) %> new challenge(s).</p>
-<p><a href="CreateQuiz.jsp">Create New Quiz</a></p>
 <h3>List of Quizzes created recently by you:</h3>
 <%
 	rs = QzManager.getRecentlyCreatedQuizzes(username, 5);
@@ -130,6 +129,7 @@
 
 	
 %>
+<p><a href="CreateQuiz.jsp">Create New Quiz</a></p>
 <p><a href="quizbycategorypage.jsp">Find Quiz by Categories</a></p>
 <p><a href="quizbytagpage.jsp">Find Quiz by Tags</a></p>
 <p><a href="searchUsers.jsp">Find Players</a></p>

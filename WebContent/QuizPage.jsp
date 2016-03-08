@@ -78,6 +78,7 @@ background-color: #8dbdd8;
 	<h3><u>Quiz ID:</u> <%= idName %></h3>
 	<h3><u>Quiz Title:</u> <%= rs.getString("title") %></h3>
 	<h3><u>Quiz Description:</u> <%= rs.getString("description") %></h3>
+	<h3><u>Quiz Max Score:</u> <%= rs.getString("maxScore") %></h3>
 	<h3><u>Quiz Category:</u> <a href="quizbycategorypage.jsp?id=<%= rs.getString("category") %>"><%= rs.getString("category") %></a></h3>
 <%
 	rs = QzManager.getQuizTags(Integer.parseInt(idName));

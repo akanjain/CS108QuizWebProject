@@ -28,7 +28,7 @@ public class QuizManager {
 			//String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
 			//+ "\", \"" + dateCreated + "\", '" + isRandom + "', '" + isOnePage + "', '" + isPracticeMode + "'," + numQuestions + ")";
 			String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
-			+ "\", NULL, '" + isRandom + "', '" + isOnePage + "', '" + isImmediate + "', '" + isPracticeMode + "'," + numQuestions + ")";
+			+ "\", NULL, '" + isRandom + "', '" + isOnePage + "', '" + isImmediate + "', '" + isPracticeMode + "'," + numQuestions + "," + 0 + ")";
 			System.out.println(qry);
 			stmt.executeUpdate(qry);
 			return quizNumber;
@@ -152,7 +152,7 @@ public class QuizManager {
 	public void updateQuizCreation(int quizNumber) {
 		try {		
 			String timeStamp = ClockTimeStamp.getTimeStamp();
-			String qry = "UPDATE quizzes SET dateCreated = \"" + timeStamp + "\" WHERE quizId = " + quizNumber;
+			String qry = "UPDATE quizzes SET dateCreated = \"" + timeStamp + "\", maxScore = " + getTotalQuizScore(quizNumber) + " WHERE quizId = " + quizNumber;
 			System.out.println(qry);
 			stmt.executeUpdate(qry);
 		} catch (SQLException e) {
@@ -184,7 +184,7 @@ public class QuizManager {
 	}
 	
 	public Map<String, List<String>> getAllQuizByCategory() {
-		Map<String, List<String>> mp = new HashMap<String, List<String>>();
+		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			String qry = "SELECT * FROM quizzes ORDER BY dateCreated DESC";
 			System.out.println(qry);
@@ -210,7 +210,7 @@ public class QuizManager {
 	
 	public Map<String, List<String>> getQuizByCategory(String category) {
 		List<String> allQuizList = new ArrayList<String>();
-		Map<String, List<String>> mp = new HashMap<String, List<String>>();
+		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			String qry = "SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\" ORDER BY dateCreated DESC";
 			System.out.println(qry);
@@ -293,6 +293,50 @@ public class QuizManager {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public int getTotalQuizScore(int quizNumber) {
+		int maxscore = 0;
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM questions WHERE quizId = " + quizNumber);
+			List<String> quesIdList = new ArrayList<String>();
+			List<String> quesTypeList = new ArrayList<String>();
+			while (rs.next()) {
+				quesTypeList.add(rs.getString("questionType"));
+				quesIdList.add(rs.getString("questionId"));
+			}
+			for (int i = 0; i < quesIdList.size(); i++) {
+				String type = quesTypeList.get(i);
+				String quesNum = quesIdList.get(i);
+				if (type.equals("matching")) {
+					ResultSet temprs = getMatchingOption(Integer.parseInt(quesNum));
+					temprs.last();
+					maxscore += temprs.getRow();
+				} else if (type.equals("multiple-choice-multiple-answer")) {
+					ResultSet temprs = getAnswerOption(Integer.parseInt(quesNum));
+					while (temprs.next()) {
+						if (temprs.getString("isCorrect").equals("true")) {
+							maxscore++;
+						}
+					}
+				} else if (type.equals("multiple-answer-ordered")) {
+					ResultSet temprs = getAnswer(Integer.parseInt(quesNum));
+					temprs.last();
+					maxscore += temprs.getRow();
+				} else if (type.equals("multiple-answer-unordered")) {
+					ResultSet temprs = getAnswerSlot(Integer.parseInt(quesNum));
+					if (temprs.next()) {
+						maxscore += Integer.parseInt(temprs.getString("numSlot"));
+					}
+				} else {
+					maxscore++;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return maxscore;
 	}
 	
 	public String clearQuizHistory(int quizNumber) {
@@ -699,7 +743,7 @@ public class QuizManager {
 	}
 	
 	public Map<String, List<String>> getAllQuizTags() {
-		Map<String, List<String>> mp = new HashMap<String, List<String>>();
+		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			//ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags");
 			String qry = "SELECT a.quizId, a.tagName, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId ORDER BY b.dateCreated DESC";
@@ -726,7 +770,7 @@ public class QuizManager {
 	
 	public Map<String, List<String>> getAllQuizMatchingTags(String tag) {
 		List<String> allTagList = new ArrayList<String>();
-		Map<String, List<String>> mp = new HashMap<String, List<String>>();
+		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			//String qry = "SELECT * FROM quizTags WHERE tagName = \"" + tag.toLowerCase() + "\" INNER JOIN quizzes USING (quizId)";
 			String qry = "SELECT a.quizId, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId AND a.tagName=\"" + tag.toLowerCase() + "\" ORDER BY b.dateCreated DESC";

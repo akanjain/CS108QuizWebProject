@@ -11,5 +11,6 @@
 by <%= request.getSession().getAttribute("username") %>
 </h1>
 <p><a href="viewquiz.jsp?id=<%= (Integer) session.getAttribute("quizNumber") %>" >View Created Quiz</a></p>
+<p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>
