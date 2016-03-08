@@ -647,4 +647,15 @@ public class QuizManager {
 		return mp;
 	}
 	
+	public boolean getQuizExistbyTag(String tag, int quizId) {
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags WHERE tagName = \"" + tag.toLowerCase() + "\" AND quizId = " + quizId);
+			return rs.isBeforeFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
 }

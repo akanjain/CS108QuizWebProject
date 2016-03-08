@@ -44,10 +44,14 @@ public class AddTagServlet extends HttpServlet {
 		
 		int quizId = Integer.parseInt(request.getParameter("quizId"));
 		String tagname = request.getParameter("tagname");
-		QzManager.addQuizTag(quizId, tagname);
-		
-		RequestDispatcher dispatcher = request.getRequestDispatcher("TagAdded.jsp?id=" + request.getParameter("quizId"));
-		dispatcher.forward(request, response);
+		if (QzManager.getQuizExistbyTag(tagname, quizId)) {
+			RequestDispatcher dispatcher = request.getRequestDispatcher("TagRejected.jsp?id=" + request.getParameter("quizId"));
+			dispatcher.forward(request, response);
+		} else {
+			QzManager.addQuizTag(quizId, tagname);
+			RequestDispatcher dispatcher = request.getRequestDispatcher("TagAdded.jsp?id=" + request.getParameter("quizId"));
+			dispatcher.forward(request, response);
+		}
 	}
 
 }
