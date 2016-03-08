@@ -13,10 +13,9 @@
 <script>
 $(document).ready(function(){
 	{ 
-        $("#myTable").tablesorter( {sortList: [[0,1]]} );
+        $("#myTable").tablesorter( {sortList: [[0,1]]} ); 
     } 
 });
-
 </script>
 <style type="text/css">
 table.tablesorter {
@@ -57,19 +56,6 @@ table.tablesorter thead tr .headerSortDown {
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
 background-color: #8dbdd8;
 }  
-
-.column-user {
-  width: 30%;
-}
-.column-date { 
-  width: 40%;
-}
-.column-score {
-  width: 15%;
-}
-.column-time {
-  width: 15%;
-}
 </style>
 </head>
 <body>
@@ -174,7 +160,7 @@ background-color: #8dbdd8;
 		out.println("<p>There is no record of quiz taken by you in the system.</p>");
 	} else {
 %>
-<table id="myTable" class="tablesorter">
+<table id="myTable" class="tablesorter"> 
 <thead> 
 <tr> 
     <th align="center">Quiz Taken Date</th> 
@@ -206,47 +192,33 @@ background-color: #8dbdd8;
 		out.println("<p>No user has played this quiz before.</p>");
 	} else {
 %>
-
-<table id="highestPerfTable">
-		<tr>
-			<td>
-				<table cellspacing="0" cellpadding="1" border="1" width="500">
-					<tr style="color: white; background-color: grey">
-						<th class="column-user" align="center">User</th>
-						<th class="column-date" align="center">Date Quiz Taken</th>
-						<th class="column-score" align="center">Score</th>
-						<th class="column-time" align="center">Time Taken</th>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div style="width: 520px; height: 50px; overflow: auto;">
-					<table cellspacing="0" cellpadding="1" border="1" width="500">
-						<%
-							while (highestperfrs.next()) {
-						%>
-						<tr>
-							<td class="column-user" align="center"><a
-								href="userpage.jsp?username=<%=highestperfrs.getString("username")%>"><%=highestperfrs.getString("username")%></a></td>
-							<td class="column-date" align="center"><%=highestperfrs.getString("time")%></td>
-							<td class="column-score" align="center"><%=highestperfrs.getString("score")%></td>
-							<td class="column-time" align="center"><%=highestperfrs.getString("duration")%></td>
-						</tr>
-						<%
-							}
-						%>
-					</table>
-
-					<%
-						}
-					%>
-				</div>
-			</td>
-		</tr>
+<table id="highestPerfTable"> 
+<thead> 
+<tr> 
+    <th align="center">User</th> 
+    <th align="center">Date Quiz Taken</th>
+    <th align="center">Score</th> 
+    <th align="center">Time Taken</th> 
+</tr> 
+</thead> 
+<tbody> 
+<%
+		while (highestperfrs.next()) {
+%>
+<tr>
+	<td align="center"><a href="userpage.jsp?username=<%= highestperfrs.getString("username") %>"><%= highestperfrs.getString("username") %></a></td> 
+    <td align="center"><%= highestperfrs.getString("time") %></td> 
+    <td align="center"><%= highestperfrs.getString("score") %></td> 
+    <td align="center"><%= highestperfrs.getString("duration") %></td> 
+</tr> 
+<%
+		}
+%>
+</tbody> 
 </table>
-	
+<%
+	}
+%> 
 <h3><u>List of recent top performers:</u></h3>
 <%	
 	ResultSet currenthighestperfrs = QzManager.getHighestPerformers(Integer.parseInt(idName), timeFrame, 5);
@@ -315,7 +287,44 @@ background-color: #8dbdd8;
 <%
 	}
 %> 
-<p>print summary statistics</p>
+<h3><u>Summary Statistics of Users taken this quiz:</u></h3>
+<%	
+	//ResultSet currentperfrs = QzManager.getPerformers(Integer.parseInt(idName), timeFrame, 20);
+	Map<String, String> userQuizRecord = QzManager.getAllUserQuizRecords(Integer.parseInt(idName));
+	if (userQuizRecord.size() == 0) {
+		out.println("<p>No user has played this quiz in past.</p>");
+	} else {
+%>
+<table> 
+<thead> 
+<tr> 
+    <th align="center">User</th> 
+    <th align="center">No. of Attempts</th>
+    <th align="center">Best Score</th> 
+    <th align="center">Worst Score</th> 
+</tr> 
+</thead> 
+<tbody> 
+<%
+		for (String key: userQuizRecord.keySet()) {
+			String[] firstpart = userQuizRecord.get(key).split("_");
+			String[] bestScore = firstpart[1].split(",");
+			String[] worstScore = firstpart[2].split(",");
+%>
+<tr>
+	<td align="center"><a href="userpage.jsp?username=<%= key %>"><%= key %></a></td> 
+    <td align="center"><%= firstpart[0] %></td> 
+    <td align="center"><%= bestScore[0] + ", " + bestScore[1] + "sec" %></td> 
+    <td align="center"><%= worstScore[0] + ", " + worstScore[1] + "sec" %></td> 
+</tr> 
+<%
+		}
+%>
+</tbody> 
+</table>
+<%
+	}
+%> 
 <form action="QuizPlayServlet" method="post">
 <p>
 <input name="quizId" type="hidden" value="<%= idName %>"/>

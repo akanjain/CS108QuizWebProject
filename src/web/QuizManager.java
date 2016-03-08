@@ -541,6 +541,105 @@ public class QuizManager {
 		return rs;
 	}
 	
+	public Map<String, String> getAllUserQuizRecords(int quizId) {
+		Map<String, String> userQuizRecord = new TreeMap<String, String>();
+		
+		try {
+			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + ";";
+			System.out.println("qry = " + qry);
+			ResultSet rs = stmt.executeQuery(qry);
+			Map<String, Integer> countMap = new HashMap<String, Integer>();
+			Map<String, String> bestScore = new HashMap<String, String>();
+			Map<String, String> worstScore = new HashMap<String, String>();
+			while (rs.next()) {
+				String username = rs.getString("username");
+				String duration = rs.getString("duration");
+				String score = rs.getString("score");
+				if (!countMap.containsKey(username)) {
+					countMap.put(username, 1);
+					bestScore.put(username, score + "," + duration);
+					worstScore.put(username, score + "," + duration);
+				} else {
+					countMap.put(username, countMap.get(username)+1);
+					String bScore = bestScore.get(username);
+					String wScore = worstScore.get(username);
+					String[] goodScore = bScore.split(",");
+					String[] badScore = wScore.split(",");
+					int score1 = Integer.parseInt(goodScore[0]);
+					int dur1 = Integer.parseInt(goodScore[1]);
+					int score2 = Integer.parseInt(badScore[0]);
+					int dur2 = Integer.parseInt(badScore[1]);
+					int scorenew = Integer.parseInt(score);
+					int durnew = Integer.parseInt(duration);
+					if (scorenew > score1) {
+						bestScore.put(username, scorenew + "," + durnew);
+					} else if (scorenew == score1) {
+						if (durnew < dur1) {
+							bestScore.put(username, scorenew + "," + durnew);
+						}
+					}
+					if (scorenew < score2) {
+						worstScore.put(username, scorenew + "," + durnew);
+					} else if (scorenew == score2) {
+						if (durnew > dur2) {
+							worstScore.put(username, scorenew + "," + durnew);
+						}
+					}
+				}
+			}
+			for (String user : countMap.keySet()) {
+				userQuizRecord.put(user, countMap.get(user) + "_" + bestScore.get(user) + "_" + worstScore.get(user));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return userQuizRecord;
+	}
+	
+	public String getUserQuizRecord(int quizId, String username) {
+
+		String bestScore = "";
+		try {
+			String qry = "SELECT time, duration, score FROM quizRecords WHERE quizId = " + quizId + " AND username=\"" + username + "\" ORDER BY score DESC, duration;";
+			System.out.println("qry = " + qry);
+			ResultSet rs = stmt.executeQuery(qry);
+			int countMap = 0;
+			if (rs.next()) {
+				String duration = rs.getString("duration");
+				String score = rs.getString("score");
+				bestScore = score + "," + duration;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return bestScore;
+	}
+	
+	public String getQuizTopScore(int quizId) {
+
+		String bestScore = "";
+		try {
+			String qry = "SELECT username, duration, score FROM quizRecords WHERE quizId = " + quizId + " ORDER BY score DESC, duration;";
+			System.out.println("qry = " + qry);
+			ResultSet rs = stmt.executeQuery(qry);
+			if (rs.next()) {
+				String username = rs.getString("username");
+				String duration = rs.getString("duration");
+				String score = rs.getString("score");
+				bestScore = username + "," + score + "," + duration;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return bestScore;
+	}
+	
 	public synchronized void addRatingReview(int quizNumber, String username, int userRating, String reviewText) {
 		try {
 			ResultSet rs = stmt.executeQuery("SELECT * FROM ratingNreviews");
