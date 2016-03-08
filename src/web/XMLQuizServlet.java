@@ -80,8 +80,6 @@ public class XMLQuizServlet extends HttpServlet {
 			//add answers
 			if (questionTypes.get(i).equals("multiple-choice") || questionTypes.get(i).equals("multiple-choice-multiple-answer") || questionTypes.get(i).equals("multiple-choice-multiple-answer")) {
 				//access both answers list and options list
-				System.out.println("Current Index: ");
-				System.out.println(i);
 				List<String> options = answerOptions.get(i);
 				Set<String> answers = new HashSet<String>(answersCorrect.get(i));
 				boolean[] correctArray = new boolean[options.size()];
@@ -94,9 +92,11 @@ public class XMLQuizServlet extends HttpServlet {
 				}
 				String[] optionsArray = options.toArray(new String[options.size()]);
 				QzManager.addMultiChoiceAnswer(quesNumber, optionsArray, correctArray);
+				
 			} else if (questionTypes.get(i).equals("matching")) {
-				List<String> options = answersCorrect.get(i);
+				List<String> options = answerOptions.get(i);
 				String[] choiceArray = options.toArray(new String[options.size()]);
+				
 				List<String> answers = answersCorrect.get(i);
 				String[] ansArray = answers.toArray(new String[answers.size()]);
 				QzManager.addMatchingAnswer(quesNumber, choiceArray, ansArray);

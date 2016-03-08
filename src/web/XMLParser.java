@@ -111,15 +111,21 @@ public class XMLParser {
 					questions.add(elem.getTextContent());
 					continue;
 				}
-				else if(tag == "blank-query") {
+				else if(tag.equals("blank-query")) {
 					String query = "";
-					NodeList parts = element.getChildNodes();
+					NodeList parts = elem.getChildNodes();
+					System.out.println(parts.getLength());
 					for(int j = 0; j < parts.getLength(); j++) {
 						Node n = parts.item(j);
 						if(n.getNodeType() == Node.ELEMENT_NODE) {
 							Element part = (Element) n;
-							if (part.getTagName() == "blank") query += "_____";
-							else query += part.getTextContent();
+							System.out.println(part.getTagName());
+							if (part.getTagName().equals("pre")) {
+								query += part.getTextContent();
+								query += "_____";
+							} else if (part.getTagName().equals("post")) {
+								query += part.getTextContent();
+							}
 						}
 					}
 					questions.add(query);
@@ -142,7 +148,6 @@ public class XMLParser {
 							answersCorrect.put(index, correctAnswers);
 						}
 						//put all options(including the correct answers above)
-						//matching will only deal with these without the answer attribute
 						List<String> options;
 						if(answerOptions.containsKey(index)) {
 							options = answerOptions.get(index);
@@ -164,7 +169,7 @@ public class XMLParser {
 						}
 						options.add(elem.getTextContent());
 						answerOptions.put(index, options);
-					} else if (tag == "answer-list") {
+					} else if (tag.equals("answer-list")) {
 						//there can be multiple correct answers
 						List<String> correctAnswers;
 						NodeList answer_list = element.getElementsByTagName("answer");
