@@ -130,6 +130,7 @@
 
 	
 %>
+<p><a href="quizbycategorypage.jsp">Find Quiz by Categories</a></p>
 <p><a href="quizbytagpage.jsp">Find Quiz by Tags</a></p>
 <p><a href="searchUsers.jsp">Find Players</a></p>
 <p><a href="history.jsp">History</a></p>

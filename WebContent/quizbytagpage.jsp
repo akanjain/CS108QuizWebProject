@@ -14,7 +14,7 @@
 <%
 	String tagName = request.getParameter("id");
 	QuizManager QzManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
-	Map<String, Set<String>> allTagQuizMp;
+	Map<String, List<String>> allTagQuizMp;
 	if (tagName == null) {
 		allTagQuizMp = QzManager.getAllQuizTags();
 	} else {
@@ -30,7 +30,7 @@
 %>
 <h3>List of Quizzes with tag "<%= key.toUpperCase() %>":</h3>
 <%
-	Set<String> allQuizSet = allTagQuizMp.get(key);
+	List<String> allQuizSet = allTagQuizMp.get(key);
 	out.println("<table style=\"border:20px\">");
 	out.println("<tr><td align=\"center\">Created Time</td><td align=\"center\">ID</td><td align=\"center\">Title</td>");
 	for (String s : allQuizSet) {
@@ -49,5 +49,6 @@
 		}
 	}
 %>
+<p>Go back to <a href="homepage.jsp">Homepage</a></p>
 </body>
 </html>

@@ -183,31 +183,45 @@ public class QuizManager {
 		}
 	}
 	
-	public ResultSet getQuizListbyCategory(String category) {
+	public Map<String, List<String>> getAllQuizByCategory() {
+		Map<String, List<String>> mp = new HashMap<String, List<String>>();
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\"");
-			return rs;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	public Map<String, Set<String>> getAllQuizCategory() {
-		Map<String, Set<String>> mp = new HashMap<String, Set<String>>();
-		try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes");
+			String qry = "SELECT * FROM quizzes ORDER BY dateCreated DESC";
+			System.out.println(qry);
+			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String categoryName = rs.getString("category");
 				String quizid = rs.getString("quizId");
+				String title = rs.getString("title");
+				String dateCreated = rs.getString("dateCreated");
 				if (!mp.containsKey(categoryName.toLowerCase())) {
-					mp.put(categoryName.toLowerCase(), new HashSet<String>());
+					mp.put(categoryName.toLowerCase(), new ArrayList<String>());
 				}
-				Set<String> s = mp.get(categoryName.toLowerCase());
-				s.add(quizid);
+				List<String> s = mp.get(categoryName.toLowerCase());
+				s.add(quizid + "," + title + "," + dateCreated);
 				mp.put(categoryName.toLowerCase(), s);
 			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mp;
+	}
+	
+	public Map<String, List<String>> getQuizByCategory(String category) {
+		List<String> allQuizList = new ArrayList<String>();
+		Map<String, List<String>> mp = new HashMap<String, List<String>>();
+		try {
+			String qry = "SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\" ORDER BY dateCreated DESC";
+			System.out.println(qry);
+			ResultSet rs = stmt.executeQuery(qry);
+			while (rs.next()) {
+				String quizid = rs.getString("quizId");
+				String title = rs.getString("title");
+				String dateCreated = rs.getString("dateCreated");
+				allQuizList.add(quizid + "," + title + "," + dateCreated);
+			}
+			mp.put(category.toLowerCase(), allQuizList);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -585,11 +599,11 @@ public class QuizManager {
 		}
 	}
 	
-	public Map<String, Set<String>> getAllQuizTags() {
-		Map<String, Set<String>> mp = new HashMap<String, Set<String>>();
+	public Map<String, List<String>> getAllQuizTags() {
+		Map<String, List<String>> mp = new HashMap<String, List<String>>();
 		try {
 			//ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags");
-			String qry = "SELECT a.quizId, a.tagName, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId";
+			String qry = "SELECT a.quizId, a.tagName, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId ORDER BY b.dateCreated DESC";
 			System.out.println(qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
@@ -598,9 +612,9 @@ public class QuizManager {
 				String title = rs.getString("title");
 				String dateCreated = rs.getString("dateCreated");
 				if (!mp.containsKey(tagName.toLowerCase())) {
-					mp.put(tagName.toLowerCase(), new HashSet<String>());
+					mp.put(tagName.toLowerCase(), new ArrayList<String>());
 				}
-				Set<String> s = mp.get(tagName.toLowerCase());
+				List<String> s = mp.get(tagName.toLowerCase());
 				s.add(quizid + "," + title + "," + dateCreated);
 				mp.put(tagName.toLowerCase(), s);
 			}
@@ -611,12 +625,12 @@ public class QuizManager {
 		return mp;
 	}
 	
-	public Map<String, Set<String>> getAllQuizMatchingTags(String tag) {
-		Set<String> allTagList = new HashSet<String>();
-		Map<String, Set<String>> mp = new HashMap<String, Set<String>>();
+	public Map<String, List<String>> getAllQuizMatchingTags(String tag) {
+		List<String> allTagList = new ArrayList<String>();
+		Map<String, List<String>> mp = new HashMap<String, List<String>>();
 		try {
 			//String qry = "SELECT * FROM quizTags WHERE tagName = \"" + tag.toLowerCase() + "\" INNER JOIN quizzes USING (quizId)";
-			String qry = "SELECT a.quizId, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId AND a.tagName=\"" + tag.toLowerCase() + "\"";
+			String qry = "SELECT a.quizId, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId AND a.tagName=\"" + tag.toLowerCase() + "\" ORDER BY b.dateCreated DESC";
 			System.out.println(qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
