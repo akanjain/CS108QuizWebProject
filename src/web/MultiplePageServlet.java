@@ -136,7 +136,7 @@ public class MultiplePageServlet extends HttpServlet {
 			int score = currentQuiz.calculateScore();
 			request.setAttribute("Score", score);
 			long totalTime = TimeUnit.MILLISECONDS.toSeconds(end-start);
-			String timeTaken = totalTime + " seconds";
+			String timeTaken = totalTime + "";
 			request.setAttribute("elapsedTime", timeTaken);
 			
 			/* Update quiz records and achievements. */

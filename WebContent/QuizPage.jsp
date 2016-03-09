@@ -18,6 +18,21 @@ $(document).ready(function(){
 });
 </script>
 <style type="text/css">
+table, th, td {
+    border: 1px solid black;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2}
+
+th {
+    background-color: #E0FFFF;
+    color: black;
+}
+
+table {
+    width: 50%;
+}
+
 table.tablesorter {
 	font-family:arial;
 	background-color: #CDCDCD;

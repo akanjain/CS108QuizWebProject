@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*, java.util.*" %>
 <%@ page import="web.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -7,6 +7,22 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Result Page</title>
+<style type="text/css">
+table, th, td {
+    border: 1px solid black;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2}
+
+th {
+    background-color: #E0FFFF;
+    color: black;
+}
+
+table {
+    width: 50%;
+}
+</style>
 </head>
 <body>
 <%
@@ -17,7 +33,7 @@
 %>
 <h1>Quiz Result: </h1>
 <h3>Your score: <%= (Integer) request.getAttribute("Score") %> out of <%= currentQuiz.getTotalMaxScore() %></h3>
-<h3>Time taken to complete Quiz: <%= request.getAttribute("elapsedTime") %></h3>
+<h3>Time taken to complete Quiz: <%= request.getAttribute("elapsedTime") %> sec</h3>
 <h3><u>Quiz Score Comparison:</u></h3>
 <%	
 	Map<String, String> allUserQuizRecord = QzManager.getAllUserQuizRecords(quizId);

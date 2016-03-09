@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.util.*" %>
 <%@ page import="web.*" %>
@@ -8,6 +8,22 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Quiz by Category</title>
+<style type="text/css">
+table, th, td {
+    border: 1px solid black;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2}
+
+th {
+    background-color: #E0FFFF;
+    color: black;
+}
+
+table {
+    width: 50%;
+}
+</style>
 </head>
 <body>
 <h1>Quiz Listing by Category:</h1>
@@ -32,7 +48,7 @@
 <%
 	List<String> allQuizSet = allCategoryQuizMp.get(key);
 	out.println("<table style=\"border:20px\">");
-	out.println("<tr><td align=\"center\">Created Time</td><td align=\"center\">ID</td><td align=\"center\">Title</td>");
+	out.println("<tr><th align=\"center\">Created Time</th><th align=\"center\">ID</th><th align=\"center\">Title</th>");
 	for (String s : allQuizSet) {
 		String[] parts = s.split(",");
 %>
