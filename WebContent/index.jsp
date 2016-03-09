@@ -9,8 +9,11 @@
 <h1>Welcome to Quiz Website</h1>
 <p>Please log in. </p>
 <form action="LoginServlet" method="post">
-<p>User Name:<input type="text" name="username"></p>
-<p>Password:<input type="text" name="password"><input type="submit"></p>
+<table>
+	<tr><td>User Name</td><td><input type="text" name="username"><td></tr>
+	<tr><td>Password</td><td><input type="text" name="password"></td>
+</table>
+<input type="submit">
 <p>To visit as a guest, enter "guest" in User Name</p>
 <a href="createAccount.html">Create New Account</a>
 </form>

@@ -548,6 +548,7 @@ public class UserDataManager {
 			
 			/* Delete acccounts. */
 			stmt.executeUpdate("DELETE FROM accounts WHERE username = \"" + username + "\";");
+			stmt.executeUpdate("INSERT INTO deletedAccounts VALUES (\"" + username + "\");");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

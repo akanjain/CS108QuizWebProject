@@ -43,7 +43,19 @@ public class AccountManager {
 		}
 		
 		/* Should not reach here. */
-		assert false;
+		return false;
+	}
+	
+	public boolean deletedAccountExist(String username) {
+		try {
+			ResultSet rs = stmt.executeQuery("SELECT * FROM deletedAccounts WHERE username = \"" + username + "\";");
+			return rs.isBeforeFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/* Should not reach here. */
 		return false;
 	}
 	
@@ -66,7 +78,6 @@ public class AccountManager {
 		}
 		
 		/* Should not reach here. */
-		assert false;
 		return false;
 	}
 	
@@ -80,6 +91,7 @@ public class AccountManager {
 			e.printStackTrace();
 		}
 	}
+	
 	
 	/* Returns hashed string of the input string. */
 	private String generateHash(String str) {

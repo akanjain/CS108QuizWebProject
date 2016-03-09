@@ -424,6 +424,9 @@ public class QuizManager {
 			/* Remove review and rating of quiz. */
 			stmt.executeUpdate("DELETE FROM ratingNreviews WHERE quizId = " + quizNumber + ";");
 			
+			/* Remove tags. */
+			stmt.executeUpdate("DELETE FROM quizTags WHERE quizId = " + quizNumber + ";");
+			
 			stmt.executeUpdate("DELETE FROM quizzes WHERE quizId = " +  quizNumber + ";");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
