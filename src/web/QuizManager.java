@@ -72,9 +72,12 @@ public class QuizManager {
 			System.out.println(qry);
 			stmt.executeUpdate(qry);
 			rs = stmt.executeQuery("SELECT * FROM numberSlots");
-			rs.last();
-			String lastkeyNum = rs.getString("keyId");
-			int keyNumber = Integer.parseInt(lastkeyNum) + 1;
+			int keyNumber = 1;
+			if (rs.isBeforeFirst()) {
+				rs.last();
+				String lastkeyNum = rs.getString("keyId");
+				keyNumber = Integer.parseInt(lastkeyNum) + 1;
+			}
 			String qrySlot = "INSERT INTO numberSlots VALUES (" + keyNumber + ", " + questionNumber + ", " + numSlots + ")";
 			System.out.println(qrySlot);
 			stmt.executeUpdate(qrySlot);

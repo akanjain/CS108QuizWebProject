@@ -24,15 +24,15 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 
 public class XMLParser {
-	private static String quizTitle;
-	private static String quizDescription;
-	private static String quizCategory;
+	private String quizTitle;
+	private String quizDescription;
+	private String quizCategory;
 	//private static String dateCreated;
-	private static boolean isRandom;
-	private static boolean isOnePage;
-	private static boolean isImmediate;
-	private static boolean isPracticeMode;
-	private static int numQuestions;
+	private boolean isRandom = false;
+	private boolean isOnePage = true;
+	private boolean isImmediate = false;
+	private boolean isPracticeMode = false;
+	private int numQuestions;
 
 	private static List<String> questions; //query
 	private static List<String> qTypes; //type
@@ -42,6 +42,7 @@ public class XMLParser {
 
 	public XMLParser(String path) {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		quizCategory = "Other";
 		try {
 			File fXmlFile = new File(path);
 			DocumentBuilder builder = factory.newDocumentBuilder();
@@ -53,6 +54,7 @@ public class XMLParser {
 			answerOptions =  new HashMap<Integer, List<String>>();
 			answersCorrect = new HashMap<Integer, List<String>>();
 			corrAnswerSlots = new HashMap<Integer, Integer>();
+			
 
 			NodeList quizes = document.getElementsByTagName("quiz");
 			Node quizNode = quizes.item(0);

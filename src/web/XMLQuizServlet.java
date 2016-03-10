@@ -47,13 +47,13 @@ public class XMLQuizServlet extends HttpServlet {
 		//create quiz
 		String creatorName = (String) request.getSession().getAttribute("username");
 		String fileName = request.getParameter("fileName");
-		String path = sc.getRealPath("/xml/") + fileName;
+		String path = sc.getRealPath("/xml/") + "/" + fileName;
 		System.out.println(path);
 		XMLParser xml = new XMLParser(path);
 		String quizTitle = xml.getQuizTitle();
 		String quizDescription = xml.getQuizDescription();
 		String quizCategory = xml.getQuizCategory();
-		if (quizCategory == null) quizCategory = "Other";
+		//if (quizCategory == null) quizCategory = "Other";
 		String dateCreated = ClockTimeStamp.getTimeStamp();
 		boolean isRandom = xml.isRandom();
 		boolean isOnePage = xml.isOnePage();
@@ -108,8 +108,8 @@ public class XMLQuizServlet extends HttpServlet {
 			}
 		}
 		QzManager.updateQuizCreation(quizNumber);
-		//RequestDispatcher dispatcher = request.getRequestDispatcher("///");
-		//dispatcher.forward(request, response);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("XMLadded.jsp");
+		dispatcher.forward(request, response);
 	}
 
 }
