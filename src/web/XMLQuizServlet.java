@@ -45,7 +45,7 @@ public class XMLQuizServlet extends HttpServlet {
 		ServletContext sc = request.getServletContext();
 		QuizManager QzManager = (QuizManager) sc.getAttribute("Quiz Manager");
 		//create quiz
-		String creatorName = "ADMIN";
+		String creatorName = (String) request.getSession().getAttribute("username");
 		String fileName = request.getParameter("fileName");
 		String path = sc.getRealPath("/xml/") + fileName;
 		System.out.println(path);
@@ -53,7 +53,7 @@ public class XMLQuizServlet extends HttpServlet {
 		String quizTitle = xml.getQuizTitle();
 		String quizDescription = xml.getQuizDescription();
 		String quizCategory = xml.getQuizCategory();
-		if (quizCategory == null) quizCategory = "NOT SPECIFIED";
+		if (quizCategory == null) quizCategory = "Other";
 		String dateCreated = ClockTimeStamp.getTimeStamp();
 		boolean isRandom = xml.isRandom();
 		boolean isOnePage = xml.isOnePage();
