@@ -93,6 +93,20 @@ table {
 	}
 %>
 
+<h3><%= username %>'s friends</h3>
+<%
+	rs = userDataManager.getUserFriends(username);
+	
+	if (!rs.isBeforeFirst()) {
+		out.println("<p>" + username + "has no friend </p>");
+	} else {
+		while (rs.next()) {
+		String friend = rs.getString("toUser");	
+		out.println ("<p><a href=\"userpage.jsp?username=" + friend + "\">" + friend +  "</a></p>" );
+	}
+}
+%>
+
 <h3>To add this user as your friend, please enter your message and click "Add To Friends".</h3>
 <form action="UserpageServlet" method="post">
 <input type="text" name="message">
