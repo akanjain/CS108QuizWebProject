@@ -65,6 +65,12 @@ table {
 		}
 	}
 %>
-<p>Go back to <a href="homepage.jsp">Homepage</a></p>
+<%
+	if (((String) request.getSession().getAttribute("username")).equals("guest")) {
+		out.println("<p>Go back to <a href=\"guestHomepage.jsp\">Homepage</a></p>");
+	} else {
+		out.println("<p>Go back to <a href=\"homepage.jsp\">Homepage</a></p>");
+	}
+%>
 </body>
 </html>

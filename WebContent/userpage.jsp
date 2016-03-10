@@ -98,7 +98,7 @@ table {
 	rs = userDataManager.getUserFriends(username);
 	
 	if (!rs.isBeforeFirst()) {
-		out.println("<p>" + username + "has no friend </p>");
+		out.println("<p>" + username + " has no friend </p>");
 	} else {
 		while (rs.next()) {
 		String friend = rs.getString("toUser");	
@@ -127,6 +127,12 @@ table {
 		}
 %>
 
-<p>Go back to <a href="homepage.jsp">Homepage</a></p>
+<%
+	if (((String) request.getSession().getAttribute("username")).equals("guest")) {
+		out.println("<p>Go back to <a href=\"guestHomepage.jsp\">Homepage</a></p>");
+	} else {
+		out.println("<p>Go back to <a href=\"homepage.jsp\">Homepage</a></p>");
+	}
+%>
 </body>
 </html>
