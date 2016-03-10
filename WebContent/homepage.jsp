@@ -72,11 +72,11 @@ table {
 		out.println("<p>There is no quiz in the system.</p>");
 	} else {
 		out.println("<table style=\"border:20px\">");
-		out.println("<tr><th align=\"center\">Rank</th><th align=\"center\">Title</th><th align=\"right\">Plays</th></tr>");
+		out.println("<tr><th align=\"center\">Rank</th><th align=\"center\">Title</th><th align=\"center\">Plays</th></tr>");
 		
 		int rank = 1;
 		while (rs.next()) {
-			out.println("<tr><td align=\"center\">" + rank + "</td><td><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td><td align=\"right\">" + rs.getString("COUNT(quizId)") + "</td></tr>");
+			out.println("<tr><td align=\"center\">" + rank + "</td><td align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td><td align=\"center\">" + rs.getString("COUNT(quizId)") + "</td></tr>");
 			rank++;
 		}
 		out.println("</table>");
@@ -94,7 +94,7 @@ table {
 		out.println("<table id=\"cssTable\" style=\"border:20px\">");
 		out.println("<tr><th align=\"center\">Created Time</th><th align=\"center\">ID</th><th>Title</th>");
 		while (rs.next()) {
-			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"left\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
+			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"center\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
 		}
 		out.println("</table>");
 	}
@@ -122,9 +122,6 @@ table {
 	
 
 %>
-<p><a href="message.jsp">Messages</a>   You have <%= userDataManager.getUserNumNewMessages(username) %> new message(s).</p>
-<p><a href="friendRequest.jsp">Friend Requests</a>   You have <%= userDataManager.getUserNumNewFriendRequests(username) %> new friend request(s).</p>
-<p><a href="challenge.jsp">Challenges</a>   You have <%= userDataManager.getUserNumNewChallenges(username) %> new challenge(s).</p>
 <h3>List of Quizzes created recently by you:</h3>
 <%
 	rs = QzManager.getRecentlyCreatedQuizzes(username, 5);
@@ -135,7 +132,7 @@ table {
 		out.println("<table style=\"border:20px\">");
 		out.println("<tr><th align=\"center\">Created Time</th><th align=\"center\">ID</th><th align=\"center\">Title</th>");
 		while (rs.next()) {
-			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"left\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
+			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"center\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
 		}
 		out.println("</table>");
 	}
@@ -143,11 +140,14 @@ table {
 
 	
 %>
+<p><a href="message.jsp">Messages</a>   You have <%= userDataManager.getUserNumNewMessages(username) %> new message(s).</p>
+<p><a href="friendRequest.jsp">Friend Requests</a>   You have <%= userDataManager.getUserNumNewFriendRequests(username) %> new friend request(s).</p>
+<p><a href="challenge.jsp">Challenges</a>   You have <%= userDataManager.getUserNumNewChallenges(username) %> new challenge(s).</p>
+<p><a href="searchUsers.jsp">Find Players</a></p>
 <p><a href="CreateQuiz.jsp">Create New Quiz</a></p>
 <p><a href="quizbycategorypage.jsp">Find Quiz by Categories</a></p>
 <p><a href="quizbytagpage.jsp">Find Quiz by Tags</a></p>
 <p><a href="quizbyrating.jsp">Find Quiz by Ratings</a></p>
-<p><a href="searchUsers.jsp">Find Players</a></p>
 <p><a href="history.jsp">History</a></p>
 <p><a href="administratorTools.jsp"> Administrator Tools</a></p>
 
