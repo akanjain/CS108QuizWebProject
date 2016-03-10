@@ -14,6 +14,28 @@
 	
 %>
 <title><%= username %>'s Homepage</title>
+<style type="text/css">
+
+#cssTable
+{
+    text-align:center; 
+    vertical-align:middle;
+}
+table, th, td {
+    border: 1px solid black;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2}
+
+th {
+    background-color: #E0FFFF;
+    color: black;
+}
+
+table {
+    width: 50%;
+}
+</style>
 </head>
 <body>
 
@@ -26,9 +48,9 @@
 		out.println("<p>" + username + " has no recent activity.</p>");
 	} else {
 		out.println("<table id=\"cssTable\" align style=\"border:20px\">");
-		out.println("<tr><td>Time</td><td>ID</td><td>Title</td><td>Score</td><td>Duration</td>");
+		out.println("<tr><th>Time</th><th>ID</th><th>Title</th><th>Score</th><th>Duration</th>");
 		while(rs.next()) {
-			out.println("<tr><td>" + rs.getString("time") +  "</td><td>" + rs.getString("quizId") + "</td><td><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td><td>" + rs.getString("score") + "</td><td>" + rs.getString("duration") + "</td><td>");
+			out.println("<tr><td>" + rs.getString("time") +  "</td><td>" + rs.getString("quizId") + "</td><td><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td><td>" + rs.getString("score") + "</td><td>" + rs.getString("duration") + "</td>");
 		}
 		out.println("</table>");
 	}	

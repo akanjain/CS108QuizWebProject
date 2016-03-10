@@ -5,12 +5,26 @@
 <%@ page import="java.util.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<style>
+<style type="text/css">
 
 #cssTable
 {
     text-align:center; 
     vertical-align:middle;
+}
+table, th, td {
+    border: 1px solid black;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2}
+
+th {
+    background-color: #E0FFFF;
+    color: black;
+}
+
+table {
+    width: 50%;
 }
 </style>
 <head>
@@ -58,7 +72,7 @@
 		out.println("<p>There is no quiz in the system.</p>");
 	} else {
 		out.println("<table style=\"border:20px\">");
-		out.println("<tr><td align=\"center\">Rank</td><td align=\"center\">Title</td><td align=\"right\">Plays</td></tr>");
+		out.println("<tr><th align=\"center\">Rank</th><th align=\"center\">Title</th><th align=\"right\">Plays</th></tr>");
 		
 		int rank = 1;
 		while (rs.next()) {
@@ -78,7 +92,7 @@
 		out.println("<p>There is no new quiz in the system.</p>");
 	} else {
 		out.println("<table id=\"cssTable\" style=\"border:20px\">");
-		out.println("<tr><td align=\"center\">Created Time</td><td align=\"center\">ID</td><td>Title</td>");
+		out.println("<tr><th align=\"center\">Created Time</th><th align=\"center\">ID</th><th>Title</th>");
 		while (rs.next()) {
 			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"left\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
 		}
@@ -99,9 +113,9 @@
 		out.println("<p>You have no recent activity.</p>");
 	} else {
 		out.println("<table id=\"cssTable\" align style=\"border:20px\">");
-		out.println("<tr><td>Time</td><td>ID</td><td>Title</td><td>Score</td><td>Duration</td>");
+		out.println("<tr><th>Time</th><th>ID</th><th>Title</th><th>Score</th><th>Duration</th>");
 		while(rs.next()) {
-			out.println("<tr><td>" + rs.getString("time") +  "</td><td>" + rs.getString("quizId") + "</td><td><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td><td>" + rs.getString("score") + "</td><td>" + rs.getString("duration") + "</td><td>");
+			out.println("<tr><td>" + rs.getString("time") +  "</td><td>" + rs.getString("quizId") + "</td><td><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td><td>" + rs.getString("score") + "</td><td>" + rs.getString("duration") + "</td>");
 		}
 		out.println("</table>");
 	}
@@ -119,7 +133,7 @@
 		out.println("<p>There is no new quiz in the system created by you.</p>");
 	} else {
 		out.println("<table style=\"border:20px\">");
-		out.println("<tr><td align=\"center\">Created Time</td><td align=\"center\">ID</td><td align=\"center\">Title</td>");
+		out.println("<tr><th align=\"center\">Created Time</th><th align=\"center\">ID</th><th align=\"center\">Title</th>");
 		while (rs.next()) {
 			out.println("<tr><td align=\"center\"> " + rs.getString("dateCreated") +  "</td><td align=\"left\">" + rs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + rs.getString("quizId") +  "\">" + rs.getString("title") + "</td>");
 		}
