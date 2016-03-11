@@ -391,7 +391,7 @@ public class UserDataManager {
 		try {
 			switch (ach) {
 				case CREATE_QUIZ:
-					rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes WHERE creatorUsername = \"" + username + "\";");
+					rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes WHERE dateCreated IS NOT NULL AND creatorUsername = \"" + username + "\";");
 					rs.next();
 					int numCreated = rs.getInt(1);
 					if (numCreated == 1) {
@@ -451,7 +451,7 @@ public class UserDataManager {
 		 ResultSet rs = null;
 		 
 		 try {
-			rs = stmt.executeQuery("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE username = \"" + username + "\" ORDER BY time DESC;");
+			rs = stmt.executeQuery("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE dateCreated IS NOT NULL AND username = \"" + username + "\" ORDER BY time DESC;");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -609,7 +609,7 @@ public class UserDataManager {
 				friendActivities.add(fa);
 			}
 			
-			rs = stmt.executeQuery("SELECT * FROM quizzes WHERE creatorUsername IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			rs = stmt.executeQuery("SELECT * FROM quizzes WHERE dateCreated IS NOT NULL AND creatorUsername IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
 			while (rs.next()) {
 				String timeStamp = rs.getString("dateCreated");
 				String friendName = rs.getString("creatorUsername");
@@ -618,7 +618,7 @@ public class UserDataManager {
 				friendActivities.add(fa);
 			}	
 			
-			rs = stmt.executeQuery("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			rs = stmt.executeQuery("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE dateCreated IS NOT NULL AND username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
 			while (rs.next()) {
 				String timeStamp = rs.getString("time");
 				String friendName = rs.getString("username");

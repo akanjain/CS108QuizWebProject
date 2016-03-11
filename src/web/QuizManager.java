@@ -26,7 +26,7 @@ public class QuizManager {
 				quizNumber = Integer.parseInt(lastQuizNum) + 1;
 			}
 			String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
-			+ "\", \"" + dateCreated + "\", '" + isRandom + "', '" + isOnePage + "', '" + isImmediate + "', '" + isPracticeMode + "'," + numQuestions + "," + 0 + ")";
+			+ "\", NULL, '" + isRandom + "', '" + isOnePage + "', '" + isImmediate + "', '" + isPracticeMode + "'," + numQuestions + "," + 0 + ")";
 			stmt.executeUpdate(qry);
 			return quizNumber;
 		} catch (SQLException e) {
@@ -167,7 +167,7 @@ public class QuizManager {
 	
 	public ResultSet getQuizListbyUser(String username) {
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE creatorUsername=\"" + username + "\"");
+			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE creatorUsername=\"" + username + "\" AND dateCreated IS NOT NULL");
 			return rs;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -179,7 +179,7 @@ public class QuizManager {
 	public Map<String, List<String>> getAllQuizByCategory() {
 		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
-			String qry = "SELECT * FROM quizzes ORDER BY dateCreated DESC";
+			String qry = "SELECT * FROM quizzes WHERE dateCreated IS NOT NULL ORDER BY dateCreated DESC";
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String categoryName = rs.getString("category");
@@ -204,7 +204,7 @@ public class QuizManager {
 		List<String> allQuizList = new ArrayList<String>();
 		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
-			String qry = "SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\" ORDER BY dateCreated DESC";
+			String qry = "SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\" WHERE dateCreated IS NOT NULL ORDER BY dateCreated DESC";
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String quizid = rs.getString("quizId");
@@ -222,7 +222,7 @@ public class QuizManager {
 	
 	public ResultSet getQuiz(int quizNumber) {
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE quizId = " + quizNumber);
+			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE dateCreated IS NOT NULL AND quizId = " + quizNumber);
 			return rs;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -352,7 +352,7 @@ public class QuizManager {
 	
 	public boolean quizExist(int quizNumber) {
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE quizId = " + quizNumber + ";" );
+			ResultSet rs = stmt.executeQuery("SELECT * FROM quizzes WHERE dateCreated IS NOT NULL AND quizId = " + quizNumber + ";" );
 			return rs.isBeforeFirst();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -418,7 +418,7 @@ public class QuizManager {
 			/* Remove tags. */
 			stmt.executeUpdate("DELETE FROM quizTags WHERE quizId = " + quizNumber + ";");
 			
-			stmt.executeUpdate("DELETE FROM quizzes WHERE quizId = " +  quizNumber + ";");
+			stmt.executeUpdate("DELETE FROM quizzes WHERE dateCreated IS NOT NULL AND quizId = " +  quizNumber + ";");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -441,7 +441,7 @@ public class QuizManager {
 	public int getNumQuizzes() {
 		int num = -1;
 		try {
-			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes;");
+			ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes WHERE dateCreated IS NOT NULL;");
 			rs.next();
 			num = rs.getInt(1);
 		} catch (SQLException e) {
@@ -471,7 +471,7 @@ public class QuizManager {
 		ResultSet rs = null;
 		
 		try {
-			rs = stmt.executeQuery("SELECT quizId, title, COUNT(quizId) FROM quizRecords NATURAL JOIN quizzes GROUP BY quizId ORDER BY COUNT(quizId) DESC LIMIT " + numRecords + ";");
+			rs = stmt.executeQuery("SELECT quizId, title, COUNT(quizId) FROM quizzes NATURAL JOIN quizRecords WHERE dateCreated IS NOT NULL GROUP BY quizId ORDER BY COUNT(quizId) DESC LIMIT " + numRecords + ";");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -497,7 +497,7 @@ public class QuizManager {
 		ResultSet rs = null;
 		
 		try {
-			rs = stmt.executeQuery("SELECT * FROM quizzes NATURAL JOIN quizRecords WHERE username = \"" + username + "\" LIMIT " + numRecords + ";");
+			rs = stmt.executeQuery("SELECT * FROM quizzes NATURAL JOIN quizRecords WHERE dateCreated IS NOT NULL AND username = \"" + username + "\" LIMIT " + numRecords + ";");	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -510,7 +510,7 @@ public class QuizManager {
 		ResultSet rs = null;
 		
 		try {
-			rs = stmt.executeQuery("SELECT quizId, dateCreated, title FROM quizzes WHERE creatorUsername = \"" + username + "\" AND dateCreated IS NOT NULL ORDER BY dateCreated DESC LIMIT " + numRecords + ";");
+			rs = stmt.executeQuery("SELECT quizId, dateCreated, title FROM quizzes WHERE dateCreated IS NOT NULL AND creatorUsername = \"" + username + "\" AND dateCreated IS NOT NULL ORDER BY dateCreated DESC LIMIT " + numRecords + ";");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -706,7 +706,7 @@ public class QuizManager {
 		Map<String, Integer> countmp = new HashMap<String, Integer>();
 		Map<String, Integer> ratingmp = new HashMap<String, Integer>();
 		try {
-			String qry = "SELECT a.quizId, a.rating, b.title, b.dateCreated FROM ratingNreviews a, quizzes b WHERE a.quizId = b.quizId";
+			String qry = "SELECT a.quizId, a.rating, b.title, b.dateCreated FROM ratingNreviews a, quizzes b WHERE b.dateCreated IS NOT NULL AND a.quizId = b.quizId";
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String rating = rs.getString("rating");
@@ -770,7 +770,7 @@ public class QuizManager {
 		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			//ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags");
-			String qry = "SELECT a.quizId, a.tagName, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId ORDER BY b.dateCreated DESC";
+			String qry = "SELECT a.quizId, a.tagName, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE b.dateCreated IS NOT NULL AND a.quizId = b.quizId ORDER BY b.dateCreated DESC";
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String tagName = rs.getString("tagName");
@@ -796,7 +796,7 @@ public class QuizManager {
 		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			//String qry = "SELECT * FROM quizTags WHERE tagName = \"" + tag.toLowerCase() + "\" INNER JOIN quizzes USING (quizId)";
-			String qry = "SELECT a.quizId, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId AND a.tagName=\"" + tag.toLowerCase() + "\" ORDER BY b.dateCreated DESC";
+			String qry = "SELECT a.quizId, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE b.dateCreated IS NOT NULL AND a.quizId = b.quizId AND a.tagName=\"" + tag.toLowerCase() + "\" ORDER BY b.dateCreated DESC";
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String quizid = rs.getString("quizId");
