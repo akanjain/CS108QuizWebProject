@@ -497,7 +497,7 @@ public class QuizManager {
 		ResultSet rs = null;
 		
 		try {
-			rs = stmt.executeQuery("SELECT * FROM quizzes NATURAL JOIN quizRecords WHERE dateCreated IS NOT NULL AND username = \"" + username + "\" LIMIT " + numRecords + ";");	
+			rs = stmt.executeQuery("SELECT * FROM quizzes NATURAL JOIN quizRecords WHERE dateCreated IS NOT NULL AND username = \"" + username + "\" ORDER BY time DESC LIMIT " + numRecords + ";");	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
