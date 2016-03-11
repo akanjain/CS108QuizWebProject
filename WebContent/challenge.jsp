@@ -23,15 +23,26 @@
 		
 		ResultSet rs = userDataManager.getUserFriends(username);
 		
-		out.println("<form action=\"ChallengeServlet\" method=\"post\">");
-		while (rs.next()) {
-			out.println("<p><input type=\"radio\" name=\"toUser\" value=\"" + rs.getString("toUser") + "\">" + rs.getString("toUser") + "</p>");
+		if (!rs.isBeforeFirst()) {
+			out.println("<p><b>You don't have any friend to challenge! Add some friends and challenge them!</b></p>");
+		} else {
+			out.println("<form action=\"ChallengeServlet\" method=\"post\">");
+			boolean firstUserChecked = false;
+			while (rs.next()) {
+				if (!firstUserChecked) {
+					out.println("<p><input type=\"radio\" name=\"toUser\" value=\"" + rs.getString("toUser") + "\" checked>" + rs.getString("toUser") + "</p>");
+					firstUserChecked = true;
+				} else {
+					out.println("<p><input type=\"radio\" name=\"toUser\" value=\"" + rs.getString("toUser") + "\">" + rs.getString("toUser") + "</p>");
+				}		
+			}
+			out.println("<p><input type=\"text\" name=\"quizId\"> (Enter quiz ID here to send challenge)</p>");
+			out.println("<p><input type=\"submit\" value=\"Send a Challenge!\"></p>");
+			out.println("<input type=\"hidden\" name=\"option\" value=\"send\">");
+			out.println("</form>");		
 		}
 		
-		out.println("<p><input type=\"text\" name=\"quizId\"> (Enter quiz ID here to send challenge)</p>");
-		out.println("<p><input type=\"submit\" value=\"Send a Challenge!\"></p>");
-		out.println("<input type=\"hidden\" name=\"option\" value=\"send\">");
-		out.println("</form>");
+		
 	%>
 
 	<%
