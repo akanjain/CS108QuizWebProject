@@ -394,12 +394,18 @@ public class UserDataManager {
 					rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes WHERE creatorUsername = \"" + username + "\";");
 					rs.next();
 					int numCreated = rs.getInt(1);
-					if (numCreated == 1) { 
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Amateur Author\",\"" + timeStamp + "\");");
+					if (numCreated == 1) {
+						if (!userAchievementExist(username, "Amateur Author")) {
+							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Amateur Author\",\"" + timeStamp + "\");");
+						}			
 					} else if (numCreated == 5) {
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prolific Author\",\"" + timeStamp + "\");");
+						if (!userAchievementExist(username, "Prolific Author")) {
+							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prolific Author\",\"" + timeStamp + "\");");
+						}		
 					} else if (numCreated == 10) {
-						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prodigious Author\",\"" + timeStamp + "\");");
+						if (!userAchievementExist(username, "Prodigious Autho")) {
+							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prodigious Author\",\"" + timeStamp + "\");");
+						}				
 					}				
 					break;					
 				case TAKE_QUIZ:
@@ -408,14 +414,13 @@ public class UserDataManager {
 					rs = stmt.executeQuery("SELECT COUNT(*) FROM quizRecords WHERE username = \"" + username + "\";");
 					rs.next();
 					int numPlayed = rs.getInt(1);
-					if (numPlayed == 10) {
+					if (numPlayed == 10 && !userAchievementExist(username, "Quiz Machine")) {
 						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Quiz Machine\",\"" + timeStamp + "\");");
 					}			
 
 					/* Check if user get the highest score. */
 					/* Add only when user get highest score on a quiz and does not already have this achievements. */
-					rs = stmt.executeQuery("SELECT * FROM achievements WHERE username = \"" + username + "\";");
-					if (!rs.isBeforeFirst()) {
+					if (!userAchievementExist(username, "I am the Greatest")) {
 						rs = stmt.executeQuery("SELECT score FROM quizRecords WHERE quizId = \"" + quizId + "\" ORDER BY score DESC LIMIT 1;");
 						if (!rs.isBeforeFirst()) {
 							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"I am the Greatest\",\"" + timeStamp + "\");");
@@ -430,8 +435,7 @@ public class UserDataManager {
 					}					
 					break;
 				case PRACTICE_MODE:
-					rs = stmt.executeQuery("SELECT * FROM achievements WHERE username = \"" + username + "\" AND achievement = \"Practice Makes Perfect\";");
-					if (!rs.isBeforeFirst()) {
+					if (!userAchievementExist(username, "Practice Makes Perfect")) {
 						stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Practice Makes Perfect\",\"" + timeStamp + "\");");
 					}
 					break;
@@ -641,6 +645,18 @@ public class UserDataManager {
 		}
 
 		return result;		
+	}
+	
+	private boolean userAchievementExist(String username, String achievement) {
+		ResultSet rs;
+		try {
+			rs = stmt.executeQuery("SELECT * FROM achievements WHERE username = \"" + username + "\" AND achievement = \"" + achievement + "\";");
+			return rs.isBeforeFirst();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 
