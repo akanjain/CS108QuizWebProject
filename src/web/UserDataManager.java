@@ -403,7 +403,7 @@ public class UserDataManager {
 							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prolific Author\",\"" + timeStamp + "\");");
 						}		
 					} else if (numCreated == 10) {
-						if (!userAchievementExist(username, "Prodigious Autho")) {
+						if (!userAchievementExist(username, "Prodigious Author")) {
 							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Prodigious Author\",\"" + timeStamp + "\");");
 						}				
 					}				
