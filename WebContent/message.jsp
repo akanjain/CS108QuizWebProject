@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="web.*" %>
 <%@ page import="java.sql.*" %>
+<%@ page import="java.util.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -17,14 +18,20 @@
 		
 		ResultSet rs = userDataManager.getUserMessages(username);
 		
-		out.println("<h2>Your Message</h2>");
+		out.println("<h2>Your Messages:</h2>");
 		/* Check if there is any message. */
 		if (!rs.isBeforeFirst()) { /* Have no message. */  
 			out.println("You have no message.");
 		} else {
 			while (rs.next()) { 
-				out.println("<p>From: " + rs.getString("fromUser") + ", To: "+ rs.getString("toUser") + ", Content: " + rs.getString("Message") + "</p>");
-			}		
+				if (rs.getString("fromUser").equals(username)) {
+					out.println("<b>Message Sent to:</b> "+ rs.getString("toUser") + " at " + rs.getString("time") + "</br>"); 
+					out.println("Message: " + rs.getString("Message") + "</br></br>");
+				} else if (rs.getString("toUser").equals(username)) {
+					out.println("<b>Message Received from:</b> "+ rs.getString("fromUser") + " at " + rs.getString("time") + "</br>"); 
+					out.println("Message: " + rs.getString("Message") + "</br></br>");
+				}
+			}
 		}
 		
 	%>

@@ -25,7 +25,7 @@ public class UserDataManager {
 	public ResultSet getUserMessages(String username) {
 		ResultSet rs = null;
 		try {
-			rs = stmt.executeQuery("SELECT DISTINCT * FROM messages WHERE fromUser = \"" + username + "\" OR toUser = \"" + username + "\";");
+			rs = stmt.executeQuery("SELECT DISTINCT * FROM messages WHERE fromUser = \"" + username + "\" OR toUser = \"" + username + "\" ORDER by time DESC;");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -637,7 +637,7 @@ public class UserDataManager {
 		
 		List<String> result = new LinkedList<String>();
 		for (FriendActivity fa : friendActivities) {
-			result.add(fa.getTimeStamp() + " " + fa.getHTMLActivity());
+			result.add(fa.getTimeStamp() + "," + fa.getHTMLActivity());
 		}
 
 		return result;		

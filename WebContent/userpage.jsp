@@ -38,8 +38,8 @@ table {
 </style>
 </head>
 <body>
-
-<h3><%= username %>'s Recent Activities</h3>
+<h1>Welcome to <%= username %>'s Userpage.</h1>
+<h3><%= username %>'s Recent Activities:</h3>
 
 <%
 	rs = QzManager.getUserRecentActivities(username, 5);
@@ -56,55 +56,52 @@ table {
 	}	
 
 %>
-
 <h3>List of quizzes created by <%= username %>:</h3>
-<ul>
 <%
 	ResultSet quizUserRs = QzManager.getQuizListbyUser(username);
-	if (quizUserRs.next()) {
-%>
-<li><a href="QuizPage.jsp?id=<%= quizUserRs.getString("quizId") %>"><%= quizUserRs.getString("title") %></a></li>
-<%		
+	if (!quizUserRs.isBeforeFirst()) {
+		out.println("<p>No quizzes created by" + username + ".</p>");
 	} else {
-%>
-<li><p>No quizzes created by <%= username %></p></li>
-<%	
-	}
-	while (quizUserRs.next()) {
-%>
-<li><a href="QuizPage.jsp?id=<%= quizUserRs.getString("quizId") %>"><%= quizUserRs.getString("title") %></a></li>
-<%
+		out.println("<table style=\"border:20px\">");
+		out.println("<tr><th align=\"center\">Created Time</th><th align=\"center\">ID</th><th align=\"center\">Title</th>");
+		while (quizUserRs.next()) {
+			out.println("<tr><td align=\"center\"> " + quizUserRs.getString("dateCreated") +  "</td><td align=\"center\">" + quizUserRs.getString("quizId") + "</td><td = align=\"center\"><a href=\"QuizPage.jsp?id=" + quizUserRs.getString("quizId") +  "\">" + quizUserRs.getString("title") + "</td>");
+		}
+		out.println("</table>");
 	}
 %>
-</ul>
 
-<h3><%= username %>'s Achievements</h3>
+<h3><%= username %>'s Achievements:</h3>
 <%
 	rs = userDataManager.getUserAchievements(username);
 
 	if (!rs.isBeforeFirst()) {
-		out.println("<p>" + username + "has no achievement </p>");
+		out.println("<p>" + username + "has no achievement.</p>");
 	} else {
+		out.println("<ul>");
 		while (rs.next()) {
 		String achievement = rs.getString("achievement");
 		
-		out.println ("<p>" + achievement + "</p>" );
+		out.println ("<li>" + achievement + "</li>" );
 		}
+		out.println("</ul>");
 	}
 %>
 
-<h3><%= username %>'s friends</h3>
+<h3><%= username %>'s friends:</h3>
 <%
 	rs = userDataManager.getUserFriends(username);
 	
 	if (!rs.isBeforeFirst()) {
-		out.println("<p>" + username + " has no friend </p>");
+		out.println("<p>" + username + " has no friends.</p>");
 	} else {
+		out.println("<ul>");
 		while (rs.next()) {
-		String friend = rs.getString("toUser");	
-		out.println ("<p><a href=\"userpage.jsp?username=" + friend + "\">" + friend +  "</a></p>" );
+			String friend = rs.getString("toUser");	
+			out.println ("<li><a href=\"userpage.jsp?username=" + friend + "\">" + friend +  "</a></li>" );
+		}
+		out.println("</ul>");
 	}
-}
 %>
 
 <h3>To add this user as your friend, please enter your message and click "Add To Friends".</h3>
