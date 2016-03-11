@@ -74,7 +74,7 @@ public class QuizCreatorServlet extends HttpServlet {
 		}
 		int numQuestions = Integer.parseInt(request.getParameter("numQuestion"));
 		int quizNum = QzManager.createQuiz(quizTitle, quizDescription, quizCategory, creatorName, dateCreated, isRandom, isOnePage, isImmediate, isPracticeMode, numQuestions);
-		userDataManager.updateUserAchievements(Achievements.CREATE_QUIZ, username, quizNum, 0);
+		//userDataManager.updateUserAchievements(Achievements.CREATE_QUIZ, username, quizNum, 0);
 		session.setAttribute("quizNumber", quizNum);
 		session.setAttribute("currentQuestion", 1);
 		session.setAttribute("numQuestion", numQuestions);

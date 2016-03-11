@@ -1,6 +1,7 @@
 package web;
 
 import java.io.IOException;
+import web.UserDataManager.Achievements;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -41,6 +42,8 @@ public class AddAnswerServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		ServletContext sc = request.getServletContext();
 		QuizManager QzManager = (QuizManager) request.getServletContext().getAttribute("Quiz Manager");
+		UserDataManager userDataManager = (UserDataManager) request.getServletContext().getAttribute("User Data Manager");
+		String username = (String) request.getSession().getAttribute("username");
 		
 		int quizNumber = (Integer) session.getAttribute("quizNumber");
 		int currentQuestion = (Integer) session.getAttribute("currentQuestion");
@@ -90,6 +93,7 @@ public class AddAnswerServlet extends HttpServlet {
 			dispatcher.forward(request, response);
 		} else if (currentQuestion == numQuestions) {
 			QzManager.updateQuizCreation(quizNumber);
+			userDataManager.updateUserAchievements(Achievements.CREATE_QUIZ, username, quizNumber, 0);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("QuizCreated.jsp");
 			dispatcher.forward(request, response);
 		}
