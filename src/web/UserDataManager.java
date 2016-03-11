@@ -174,7 +174,7 @@ public class UserDataManager {
 	public ResultSet searchUsers(String str) {
 		ResultSet rs = null;
 		try {
-			System.out.println("SELECT * FROM accounts WHERE username LIKE \"%" + str + "%\";");
+			//System.out.println("SELECT * FROM accounts WHERE username LIKE \"%" + str + "%\";");
 			rs = stmt.executeQuery("SELECT * FROM accounts WHERE username LIKE \"%" + str + "%\";");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -338,7 +338,7 @@ public class UserDataManager {
 		/* Return false if account does not exist. */
 		if (!accountManager.accountExist(username)) { return false; }
 		try {
-			System.out.println("SELECT * FROM accounts WHERE username = \"" + username + "\";");
+			//System.out.println("SELECT * FROM accounts WHERE username = \"" + username + "\";");
 			ResultSet rs = stmt.executeQuery("SELECT * FROM accounts WHERE username = \"" + username + "\";");
 			rs.next();
 			return rs.getString("isAdministrator").equals("true");
@@ -593,9 +593,9 @@ public class UserDataManager {
 		List<FriendActivity> friendActivities = new LinkedList<FriendActivity>();
 		
 		try {
-			System.out.println("SELECT * FROM achievements WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
-			System.out.println("SELECT * FROM quizzes WHERE creatorUsername IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
-			System.out.println("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			//System.out.println("SELECT * FROM achievements WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			//System.out.println("SELECT * FROM quizzes WHERE creatorUsername IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
+			//System.out.println("SELECT * FROM quizRecords NATURAL JOIN quizzes WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
 			rs = stmt.executeQuery("SELECT * FROM achievements WHERE username IN (SELECT fromUser FROM friends WHERE toUser = \"" + username + "\") LIMIT " + num + ";");
 			while (rs.next()) {
 				String timeStamp = rs.getString("time");

@@ -25,11 +25,8 @@ public class QuizManager {
 				String lastQuizNum = rs.getString("quizId");
 				quizNumber = Integer.parseInt(lastQuizNum) + 1;
 			}
-			//String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
-			//+ "\", \"" + dateCreated + "\", '" + isRandom + "', '" + isOnePage + "', '" + isPracticeMode + "'," + numQuestions + ")";
 			String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
 			+ "\", NULL, '" + isRandom + "', '" + isOnePage + "', '" + isImmediate + "', '" + isPracticeMode + "'," + numQuestions + "," + 0 + ")";
-			System.out.println(qry);
 			stmt.executeUpdate(qry);
 			return quizNumber;
 		} catch (SQLException e) {
@@ -49,7 +46,6 @@ public class QuizManager {
 				questionNumber = Integer.parseInt(lastQuesNum) + 1;
 			}
 			String qry = "INSERT INTO questions VALUES (" + questionNumber + ", " + quizNumber + ", \"" + questionType + "\", \"" + text + "\")";
-			System.out.println(qry);
 			stmt.executeUpdate(qry);
 			return questionNumber;
 		} catch (SQLException e) {
@@ -69,7 +65,6 @@ public class QuizManager {
 				questionNumber = Integer.parseInt(lastQuesNum) + 1;
 			}
 			String qry = "INSERT INTO questions VALUES (" + questionNumber + ", " + quizNumber + ", \"" + questionType + "\", \"" + text + "\")";
-			System.out.println(qry);
 			stmt.executeUpdate(qry);
 			rs = stmt.executeQuery("SELECT * FROM numberSlots");
 			int keyNumber = 1;
@@ -79,7 +74,6 @@ public class QuizManager {
 				keyNumber = Integer.parseInt(lastkeyNum) + 1;
 			}
 			String qrySlot = "INSERT INTO numberSlots VALUES (" + keyNumber + ", " + questionNumber + ", " + numSlots + ")";
-			System.out.println(qrySlot);
 			stmt.executeUpdate(qrySlot);
 			return questionNumber;
 		} catch (SQLException e) {
@@ -100,7 +94,6 @@ public class QuizManager {
 			}
 			for (int i = 0; i < ansArray.length; i++) {
 				String qry = "INSERT INTO answerOptions VALUES (" + keyNum + ", " + questionNumber + ", \"" + ansArray[i] + "\", '" + correctArray[i] + "')";
-				System.out.println(qry);
 				stmt.executeUpdate(qry);
 				keyNum++;
 			}
@@ -121,7 +114,6 @@ public class QuizManager {
 			}
 			for (int i = 0; i < choiceArray.length; i++) {
 				String qry = "INSERT INTO matchingOptions VALUES (" + keyNum + ", " + questionNumber + ", \"" + choiceArray[i] + "\", '" + answerArray[i] + "')";
-				System.out.println(qry);
 				stmt.executeUpdate(qry);
 				keyNum++;
 			}
@@ -142,7 +134,6 @@ public class QuizManager {
 			}
 			for (int i = 0; i < ansArray.length; i++) {
 				String qry = "INSERT INTO answers VALUES (" + keyNum + ", " + questionNumber + ", \"" + ansArray[i] + "\")";
-				System.out.println(qry);
 				stmt.executeUpdate(qry);
 				keyNum++;
 			}
@@ -156,7 +147,6 @@ public class QuizManager {
 		try {		
 			String timeStamp = ClockTimeStamp.getTimeStamp();
 			String qry = "UPDATE quizzes SET dateCreated = \"" + timeStamp + "\", maxScore = " + getTotalQuizScore(quizNumber) + " WHERE quizId = " + quizNumber;
-			System.out.println(qry);
 			stmt.executeUpdate(qry);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -190,7 +180,6 @@ public class QuizManager {
 		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			String qry = "SELECT * FROM quizzes ORDER BY dateCreated DESC";
-			System.out.println(qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String categoryName = rs.getString("category");
@@ -216,7 +205,6 @@ public class QuizManager {
 		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
 			String qry = "SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\" ORDER BY dateCreated DESC";
-			System.out.println(qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String quizid = rs.getString("quizId");
@@ -536,7 +524,6 @@ public class QuizManager {
 		
 		try {
 			String qry = "SELECT time, duration, score FROM quizRecords WHERE username = \"" + username + "\" AND quizId = " + quizId + " ORDER BY time DESC LIMIT " + numRecords + ";";
-			System.out.println("qry = " + qry);
 			rs = stmt.executeQuery(qry);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -551,7 +538,6 @@ public class QuizManager {
 		
 		try {
 			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + " ORDER BY score DESC, duration LIMIT " + numRecords + ";";
-			System.out.println("qry = " + qry);
 			rs = stmt.executeQuery(qry);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -566,7 +552,6 @@ public class QuizManager {
 		String referenceTime = ClockTimeStamp.getTimeStampMinusMin(minutes);
 		try {
 			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + " AND time >= \"" + referenceTime + "\" ORDER BY score DESC, duration LIMIT " + numRecords + ";";
-			System.out.println("qry = " + qry);
 			rs = stmt.executeQuery(qry);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -581,7 +566,6 @@ public class QuizManager {
 		String referenceTime = ClockTimeStamp.getTimeStampMinusMin(minutes);
 		try {
 			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + " AND time >= \"" + referenceTime + "\" ORDER BY time DESC LIMIT " + numRecords + ";";
-			System.out.println("qry = " + qry);
 			rs = stmt.executeQuery(qry);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -596,7 +580,6 @@ public class QuizManager {
 		
 		try {
 			String qry = "SELECT username, time, duration, score FROM quizRecords WHERE quizId = " + quizId + ";";
-			System.out.println("qry = " + qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			Map<String, Integer> countMap = new HashMap<String, Integer>();
 			Map<String, String> bestScore = new HashMap<String, String>();
@@ -653,7 +636,6 @@ public class QuizManager {
 		String bestScore = "";
 		try {
 			String qry = "SELECT time, duration, score FROM quizRecords WHERE quizId = " + quizId + " AND username=\"" + username + "\" ORDER BY score DESC, duration;";
-			System.out.println("qry = " + qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			int countMap = 0;
 			if (rs.next()) {
@@ -674,7 +656,6 @@ public class QuizManager {
 		String bestScore = "";
 		try {
 			String qry = "SELECT username, duration, score FROM quizRecords WHERE quizId = " + quizId + " ORDER BY score DESC, duration;";
-			System.out.println("qry = " + qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			if (rs.next()) {
 				String username = rs.getString("username");
@@ -700,7 +681,6 @@ public class QuizManager {
 				keyNumber = Integer.parseInt(lastkeyNum) + 1;
 			}
 			String qry = "INSERT INTO ratingNreviews VALUES (" + keyNumber + ", " + quizNumber + ", \"" + username + "\", " + userRating + ", \"" + reviewText + "\")";
-			System.out.println(qry);
 			stmt.executeUpdate(qry);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -727,7 +707,6 @@ public class QuizManager {
 		Map<String, Integer> ratingmp = new HashMap<String, Integer>();
 		try {
 			String qry = "SELECT a.quizId, a.rating, b.title, b.dateCreated FROM ratingNreviews a, quizzes b WHERE a.quizId = b.quizId";
-			System.out.println(qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String rating = rs.getString("rating");
@@ -769,7 +748,6 @@ public class QuizManager {
 				keyNumber = Integer.parseInt(lastkeyNum) + 1;
 			}
 			String qry = "INSERT INTO quizTags VALUES (" + keyNumber + ", " + quizNumber + ", \"" + tagText.toLowerCase() + "\")";
-			System.out.println(qry);
 			stmt.executeUpdate(qry);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -793,7 +771,6 @@ public class QuizManager {
 		try {
 			//ResultSet rs = stmt.executeQuery("SELECT * FROM quizTags");
 			String qry = "SELECT a.quizId, a.tagName, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId ORDER BY b.dateCreated DESC";
-			System.out.println(qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String tagName = rs.getString("tagName");
@@ -820,7 +797,6 @@ public class QuizManager {
 		try {
 			//String qry = "SELECT * FROM quizTags WHERE tagName = \"" + tag.toLowerCase() + "\" INNER JOIN quizzes USING (quizId)";
 			String qry = "SELECT a.quizId, b.title, b.dateCreated FROM quizTags a, quizzes b WHERE a.quizId = b.quizId AND a.tagName=\"" + tag.toLowerCase() + "\" ORDER BY b.dateCreated DESC";
-			System.out.println(qry);
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String quizid = rs.getString("quizId");
