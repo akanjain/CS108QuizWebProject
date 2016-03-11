@@ -38,8 +38,10 @@
 <%
 	} else if (((String)request.getAttribute("questionType")).equals("multiple-answer-unordered")) {
 %>
-<p>Number of acceptable answers: <input type="text" name="numAnswers" /></p>
-<p>Number of answer slots: <input type="text" name="numSlots" /></p>
+<p>Number of acceptable answers:</p>
+<p><input type="text" name="numAnswers" /></p>
+<p>Number of answer slots:</p>
+<p><input type="text" name="numSlots" /></p>
 <%
 	} else {
 %>

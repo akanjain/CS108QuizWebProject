@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.sql.Statement, java.sql.ResultSet, java.util.*, java.text.SimpleDateFormat" %>
+<%@ page import="web.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -18,7 +19,7 @@
 <p>Quiz category(Enter "Other" for no category):</p>
 <p><input type="text" name="quizCategory" size="50" value=""></p>
 <input name="quizCreator" type="hidden" value="<%= request.getSession().getAttribute("username") %>"/>
-<input name="quizDate" type="hidden" value="<%= new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) %>"/>
+<input name="quizDate" type="hidden" value="<%= ClockTimeStamp.getTimeStamp() %>"/>
 <p><input type="checkbox" name="preferences" value="random"> Random Order</p>
 <p><input type="checkbox" name="preferences" value="multiple"> Multiple Page Quiz</p>
 <p><input type="checkbox" name="preferences" value="immediate"> Immediate Correction(Valid Only For Multiple Page Quiz)</p>

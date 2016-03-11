@@ -26,7 +26,7 @@ public class QuizManager {
 				quizNumber = Integer.parseInt(lastQuizNum) + 1;
 			}
 			String qry = "INSERT INTO quizzes VALUES (" + quizNumber + ", \"" + quizTitle + "\", \"" + quizDescription + "\", \"" + quizCategory + "\", \"" + creatorName
-			+ "\", NULL, '" + isRandom + "', '" + isOnePage + "', '" + isImmediate + "', '" + isPracticeMode + "'," + numQuestions + "," + 0 + ")";
+			+ "\", \"" + dateCreated + "\", '" + isRandom + "', '" + isOnePage + "', '" + isImmediate + "', '" + isPracticeMode + "'," + numQuestions + "," + 0 + ")";
 			stmt.executeUpdate(qry);
 			return quizNumber;
 		} catch (SQLException e) {
