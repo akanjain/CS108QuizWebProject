@@ -116,12 +116,12 @@ public class XMLParser {
 				else if(tag.equals("blank-query")) {
 					String query = "";
 					NodeList parts = elem.getChildNodes();
-					System.out.println(parts.getLength());
+					//System.out.println(parts.getLength());
 					for(int j = 0; j < parts.getLength(); j++) {
 						Node n = parts.item(j);
 						if(n.getNodeType() == Node.ELEMENT_NODE) {
 							Element part = (Element) n;
-							System.out.println(part.getTagName());
+							//System.out.println(part.getTagName());
 							if (part.getTagName().equals("pre")) {
 								query += part.getTextContent();
 								query += "_____";

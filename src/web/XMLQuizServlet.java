@@ -48,7 +48,7 @@ public class XMLQuizServlet extends HttpServlet {
 		String creatorName = (String) request.getSession().getAttribute("username");
 		String fileName = request.getParameter("fileName");
 		String path = sc.getRealPath("/xml/") + "/" + fileName;
-		System.out.println(path);
+		//System.out.println(path);
 		XMLParser xml = new XMLParser(path);
 		String quizTitle = xml.getQuizTitle();
 		String quizDescription = xml.getQuizDescription();
