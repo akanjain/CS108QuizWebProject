@@ -394,7 +394,6 @@ public class UserDataManager {
 					rs = stmt.executeQuery("SELECT COUNT(*) FROM quizzes WHERE dateCreated IS NOT NULL AND creatorUsername = \"" + username + "\";");
 					rs.next();
 					int numCreated = rs.getInt(1);
-					System.out.println("Number quiz created = " + numCreated);
 					if (numCreated == 1) {
 						if (!userAchievementExist(username, "Amateur Author")) {
 							stmt.executeUpdate("INSERT INTO achievements VALUES (\"" + username + "\"," + "\"Amateur Author\",\"" + timeStamp + "\");");
