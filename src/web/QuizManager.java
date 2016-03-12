@@ -204,7 +204,7 @@ public class QuizManager {
 		List<String> allQuizList = new ArrayList<String>();
 		Map<String, List<String>> mp = new TreeMap<String, List<String>>();
 		try {
-			String qry = "SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\" WHERE dateCreated IS NOT NULL ORDER BY dateCreated DESC";
+			String qry = "SELECT * FROM quizzes WHERE lower(category)=\"" + category.toLowerCase() + "\" AND dateCreated IS NOT NULL ORDER BY dateCreated DESC";
 			ResultSet rs = stmt.executeQuery(qry);
 			while (rs.next()) {
 				String quizid = rs.getString("quizId");
